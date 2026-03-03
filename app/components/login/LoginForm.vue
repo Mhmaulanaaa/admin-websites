@@ -1,38 +1,34 @@
 <script setup lang="ts">
 const emit = defineEmits<{
-  submit: [data: { email: string, password: string }]
-}>()
+  submit: [data: { email: string; password: string }];
+}>();
 
 const formData = reactive({
-  email: '',
-  password: ''
-})
+  email: "",
+  password: "",
+});
 
 // Toggle password visibility
-const showPassword = ref(false)
+const showPassword = ref(false);
 
 const handleSubmit = () => {
-  emit('submit', { ...formData })
-}
+  emit("submit", { ...formData });
+};
 </script>
 
 <template>
-  <div
-    class="flex-1 flex items-center justify-center p-8 bg-gray-50 dark:bg-gray-950"
-  >
+  <div class="flex-1 flex items-center justify-center p-8 bg-gray-50 dark:bg-gray-950">
     <div class="w-full max-w-md">
       <!-- Mobile Logo -->
       <div class="lg:hidden flex items-center justify-center mb-8">
         <div
           class="w-12 h-12 bg-linear-to-br from-primary-600 to-primary-800 rounded-lg flex items-center justify-center"
         >
-          <UIcon
-            name="i-lucide-activity-square"
-            class="w-7 h-7 text-white"
-          />
+          <UIcon name="i-lucide-activity-square" class="w-7 h-7 text-white" />
         </div>
         <h1 class="text-2xl font-bold ml-3">
-          <span class="text-yellow-500">Opti</span><span class="text-gray-900 dark:text-white">mum</span>
+          <span class="text-emerald-200">Admin</span>
+          <span class="ext-gray-900 dark:text-white"> Website</span>
         </h1>
       </div>
 
@@ -48,16 +44,8 @@ const handleSubmit = () => {
           </div>
         </template>
 
-        <UForm
-          :state="formData"
-          class="space-y-4"
-          @submit="handleSubmit"
-        >
-          <UFormField
-            label="Username"
-            name="Username"
-            required
-          >
+        <UForm :state="formData" class="space-y-4" @submit="handleSubmit">
+          <UFormField label="Username" name="Username" required>
             <UInput
               v-model="formData.email"
               type="text"
@@ -68,11 +56,7 @@ const handleSubmit = () => {
             />
           </UFormField>
 
-          <UFormField
-            label="Password"
-            name="password"
-            required
-          >
+          <UFormField label="Password" name="password" required>
             <div class="relative">
               <UInput
                 v-model="formData.password"
@@ -94,13 +78,7 @@ const handleSubmit = () => {
             </div>
           </UFormField>
 
-          <UButton
-            type="submit"
-            color="primary"
-            size="lg"
-            block
-            class="font-medium"
-          >
+          <UButton type="submit" color="primary" size="lg" block class="font-medium">
             Masuk
           </UButton>
         </UForm>
@@ -113,7 +91,7 @@ const handleSubmit = () => {
       </UCard>
 
       <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
-        © 2026 Optimum. All rights reserved.
+        © 2026 Admin Website. All rights reserved.
       </p>
     </div>
   </div>

@@ -1,81 +1,91 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import {
   onClickOutside,
   useWindowSize,
   useStorage,
   useDark,
-  useToggle
-} from '@vueuse/core'
+  useToggle,
+} from "@vueuse/core";
 
-const route = useRoute()
+const route = useRoute();
 
-const { width } = useWindowSize()
-const isMobile = computed(() => width.value < 1024)
+const { width } = useWindowSize();
+const isMobile = computed(() => width.value < 1024);
 
-const isCollapsed = useStorage('sidebar-collapsed', false)
-const isMobileOpen = useState<boolean>('sidebarMobileOpen', () => false)
+const isCollapsed = useStorage("sidebar-collapsed", false);
+const isMobileOpen = useState<boolean>("sidebarMobileOpen", () => false);
 
 // Dark mode state
-const isDark = useDark()
-const toggleDark = useToggle(isDark)
+const isDark = useDark();
+const toggleDark = useToggle(isDark);
 
 watch(isMobile, (mobile) => {
-  if (!mobile) isMobileOpen.value = false
-})
+  if (!mobile) isMobileOpen.value = false;
+});
 
 interface Menu {
-  name: string
-  icon: string
-  to: string
+  name: string;
+  icon: string;
+  to: string;
 }
 
 const menus: Menu[] = [
-  { name: 'Dashboard', icon: 'heroicons:squares-2x2', to: '/dashboard' },
-  { name: 'Booking', icon: 'heroicons:calendar-days', to: '/booking' },
+  { name: "Dashboard", icon: "heroicons:squares-2x2", to: "/dashboard" },
+  { name: "Booking", icon: "heroicons:calendar-days", to: "/booking" },
   {
-    name: 'Verifikasi Pra-Bedah',
-    icon: 'heroicons:clipboard-document-check',
-    to: '/verifikasi-pra-bedah'
+    name: "Verifikasi Pra-Bedah",
+    icon: "heroicons:clipboard-document-check",
+    to: "/verifikasi-pra-bedah",
   },
   {
-    name: 'Manajemen IBP',
-    icon: 'heroicons:building-office-2',
-    to: '/manajemen-ibp'
+    name: "Manajemen IBP",
+    icon: "heroicons:building-office-2",
+    to: "/manajemen-ibp",
   },
   {
-    name: 'Serah Terima',
-    icon: 'heroicons:arrows-right-left',
-    to: '/serah-terima'
+    name: "Serah Terima",
+    icon: "heroicons:arrows-right-left",
+    to: "/serah-terima",
   },
   {
-    name: 'Durante Operasi',
-    icon: 'heroicons:plus-circle',
-    to: '/durante-operasi'
+    name: "Durante Operasi",
+    icon: "heroicons:plus-circle",
+    to: "/durante-operasi",
   },
-  { name: 'Laporan', icon: 'heroicons:document-text', to: '/laporan' }
-]
+  { name: "Laporan", icon: "heroicons:document-text", to: "/laporan" },
+  { name: "Login", icon: "heroicons:document-text", to: "/login" },
+  { name: "Daftar Dokter", icon: "heroicons:user-group", to: "/daftar-dokter" },
+  { name: "Daftar Poli", icon: "heroicons:building-office-2", to: "/daftar-poli" },
+  { name: "Layanan Unggulan", icon: "heroicons:star", to: "/layanan-unggulan" },
+  {
+    name: "Daftar Unit Kerja",
+    icon: "heroicons:building-office-2",
+    to: "/daftar-unit-kerja",
+  },
+  { name: "Laporan", icon: "heroicons:chart-bar", to: "/laporan-admin" },
+];
 
-const currentPath = computed(() => route.path)
+const currentPath = computed(() => route.path);
 
 function isActiveMenu(item: Menu): boolean {
-  return currentPath.value.startsWith(item.to)
+  return currentPath.value.startsWith(item.to);
 }
 
-const sidebarRef = ref<HTMLElement | null>(null)
+const sidebarRef = ref<HTMLElement | null>(null);
 
 onClickOutside(sidebarRef, () => {
   if (isMobile.value && isMobileOpen.value) {
-    isMobileOpen.value = false
+    isMobileOpen.value = false;
   }
-})
+});
 
 function toggleSidebar() {
   if (isMobile.value) {
-    isMobileOpen.value = !isMobileOpen.value
+    isMobileOpen.value = !isMobileOpen.value;
   } else {
-    isCollapsed.value = !isCollapsed.value
+    isCollapsed.value = !isCollapsed.value;
   }
 }
 </script>
@@ -102,41 +112,35 @@ function toggleSidebar() {
         'lg:translate-x-0',
         isCollapsed ? 'lg:w-20' : 'lg:w-72',
         'w-80',
-        isMobileOpen ? 'translate-x-0' : '-translate-x-full'
+        isMobileOpen ? 'translate-x-0' : '-translate-x-full',
       ]"
     >
       <!-- Header dengan Gradient -->
       <div
         :class="[
           'h-16 flex items-center px-5 border-b border-gray-200/50 dark:border-slate-700/50',
-          isCollapsed ? 'lg:justify-center' : 'justify-between'
+          isCollapsed ? 'lg:justify-center' : 'justify-between',
         ]"
       >
         <div
           :class="[
             'flex items-center gap-3 transition-all duration-500',
-            isCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : ''
+            isCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : '',
           ]"
         >
           <div class="relative">
-            <div
-              class="absolute inset-0 bg-green-500 blur-lg opacity-30 rounded-full"
-            />
+            <div class="absolute inset-0 bg-green-500 blur-lg opacity-30 rounded-full" />
             <div
               class="relative w-10 h-10 rounded-xl bg-linear-to-brrom-green-400 to-emerald-600 flex items-center justify-center text-white font-bold shadow-lg"
             >
-              <img
-                src="/logo.png"
-                alt="Logo"
-                class="w-12 h-12 object-contain"
-              >
+              <img src="/logo.png" alt="Logo" class="w-12 h-12 object-contain" />
             </div>
           </div>
           <div>
             <h1
               class="text-xl font-bold bg-linear-to-r from-slate-800 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent"
             >
-              OPTI<span class="text-green-500">MUM</span>
+              Admin<span class="text-emerald-500"> Panel</span>
             </h1>
           </div>
         </div>
@@ -166,7 +170,7 @@ function toggleSidebar() {
             isCollapsed ? 'lg:justify-center' : '',
             isActiveMenu(item)
               ? 'bg-linear-to-r from-green-500 to-emerald-600 text-white shadow-lg shadow-green-500/25 dark:shadow-green-500/20 scale-[1.02]'
-              : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800/50 hover:text-gray-900 dark:hover:text-slate-200'
+              : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800/50 hover:text-gray-900 dark:hover:text-slate-200',
           ]"
           :style="{ animationDelay: `${index * 50}ms` }"
         >
@@ -203,9 +207,7 @@ function toggleSidebar() {
           <span
             :class="[
               'relative z-10 font-medium whitespace-nowrap transition-all duration-500',
-              isCollapsed
-                ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden'
-                : 'opacity-100'
+              isCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : 'opacity-100',
             ]"
           >
             {{ item.name }}
@@ -227,7 +229,7 @@ function toggleSidebar() {
             'w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all duration-300 group',
             'bg-gray-100 dark:bg-slate-800/50 hover:bg-gray-200 dark:hover:bg-slate-700/50',
             'border border-gray-200 dark:border-slate-700/50',
-            isCollapsed ? 'lg:justify-center' : ''
+            isCollapsed ? 'lg:justify-center' : '',
           ]"
           @click="toggleDark()"
         >
@@ -244,9 +246,7 @@ function toggleSidebar() {
           <span
             :class="[
               'text-sm font-medium text-gray-700 dark:text-slate-300 whitespace-nowrap transition-all duration-500',
-              isCollapsed
-                ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden'
-                : 'opacity-100'
+              isCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : 'opacity-100',
             ]"
           >
             {{ isDark ? "Mode Gelap" : "Mode Terang" }}
@@ -258,12 +258,7 @@ function toggleSidebar() {
       <div
         class="p-4 mx-3 mb-3 rounded-2xl bg-linear-to-br from-gray-50 to-gray-100 dark:from-slate-800/50 dark:to-slate-900/50 border border-gray-200/50 dark:border-slate-700/50 backdrop-blur-sm"
       >
-        <div
-          :class="[
-            'flex items-center gap-3',
-            isCollapsed ? 'lg:justify-center' : ''
-          ]"
-        >
+        <div :class="['flex items-center gap-3', isCollapsed ? 'lg:justify-center' : '']">
           <div class="relative group">
             <div
               class="absolute inset-0 bg-green-500 blur-md opacity-20 group-hover:opacity-40 transition-opacity rounded-full"
@@ -281,17 +276,13 @@ function toggleSidebar() {
           <div
             :class="[
               'flex-1 min-w-0 transition-all duration-500',
-              isCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : ''
+              isCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : '',
             ]"
           >
-            <p
-              class="font-semibold text-sm text-gray-800 dark:text-slate-200 truncate"
-            >
+            <p class="font-semibold text-sm text-gray-800 dark:text-slate-200 truncate">
               Andri Aprilianzah
             </p>
-            <p
-              class="text-xs text-green-600 dark:text-green-400 font-medium truncate"
-            >
+            <p class="text-xs text-green-600 dark:text-green-400 font-medium truncate">
               Administrator
             </p>
           </div>
@@ -299,13 +290,10 @@ function toggleSidebar() {
           <button
             :class="[
               'p-2 rounded-xl text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300',
-              isCollapsed ? 'lg:hidden' : ''
+              isCollapsed ? 'lg:hidden' : '',
             ]"
           >
-            <UIcon
-              name="heroicons:arrow-right-on-rectangle"
-              class="w-5 h-5"
-            />
+            <UIcon name="heroicons:arrow-right-on-rectangle" class="w-5 h-5" />
           </button>
         </div>
       </div>

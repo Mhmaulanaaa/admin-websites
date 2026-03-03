@@ -26,5 +26,26 @@ export default defineNuxtConfig({
         braceStyle: '1tbs'
       }
     }
+  },
+  app: {
+    head: {
+      title: 'Admin Webiste',
+      titleTemplate: '%s  | RSUD Dr. Soetomo',
+
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/png',
+          href: '/rsds-icon.ico'
+        }
+      ],
+
+      meta: [
+        {
+          name: 'description',
+          content: 'Admin Website RSUD Dr. Soetomo'
+        }
+      ]
+    }
   }
 })

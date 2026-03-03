@@ -1,9 +1,9 @@
 <script setup lang="ts">
 const stats = [
-  { value: '7+', label: 'Modul Terintegrasi' },
-  { value: '24/7', label: 'Real-time Monitoring' },
-  { value: '100%', label: 'Digital Checklist' }
-]
+  { label: "Total Users", value: "1.2K" },
+  { label: "Active Sessions", value: "350" },
+  { label: "Server Uptime", value: "99.9%" },
+];
 </script>
 
 <template>
@@ -15,11 +15,7 @@ const stats = [
       <div
         class="absolute inset-0"
         style="
-          background-image: radial-gradient(
-            circle at 2px 2px,
-            white 1px,
-            transparent 0
-          );
+          background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0);
           background-size: 40px 40px;
         "
       />
@@ -30,28 +26,23 @@ const stats = [
         <div
           class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center"
         >
-          <img
-            src="/logo.png"
-            alt="Logo"
-            class="w-32 h-32 object-contain"
-          >
+          <img src="/logo.png" alt="Logo" class="w-32 h-32 object-contain" />
         </div>
         <div>
           <h1 class="text-3xl font-bold">
-            <span class="text-yellow-400">Opti</span><span class="text-white">mum</span>
+            <span class="text-emerald-200">Admin</span>
+            <span class="text-white"> Website</span>
           </h1>
-          <p class="text-white/80 text-sm">
-            Surgical Management System
-          </p>
+          <p class="text-white/80 text-sm">Monitoring Admin Website</p>
         </div>
       </div>
 
       <h2 class="text-4xl font-bold mb-4 leading-tight">
-        Sistem Manajemen<br>Operasi Terintegrasi
+        Sistem Admin<br />Website RSUD Dr.Soetomo
       </h2>
       <p class="text-lg text-white/90 mb-8 leading-relaxed">
-        Platform digital untuk mengelola seluruh proses operasi dari penjadwalan
-        hingga pelaporan dengan efisien dan aman.
+        Kelola dan pantau semua aspek operasional RSUD Dr.Soetomo dengan mudah melalui
+        dashboard yang intuitif dan terintegrasi.
       </p>
 
       <div class="grid grid-cols-3 gap-4 mt-8">
