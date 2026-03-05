@@ -28,7 +28,22 @@ watch(isMobile, (mobile) => {
 interface Menu {
   name: string;
   icon: string;
-  to: string;
+  to?: string;
+  children?: Menu[];
+}
+
+const openMenus = ref<string[]>([]);
+
+function toggleDropdown(name: string) {
+  if (openMenus.value.includes(name)) {
+    openMenus.value = openMenus.value.filter((n) => n !== name);
+  } else {
+    openMenus.value.push(name);
+  }
+}
+
+function isDropdownOpen(name: string) {
+  return openMenus.value.includes(name);
 }
 
 const menus: Menu[] = [
@@ -55,7 +70,7 @@ const menus: Menu[] = [
     to: "/durante-operasi",
   },
   { name: "Laporan", icon: "heroicons:document-text", to: "/laporan" },
-  { name: "Login", icon: "heroicons:document-text", to: "/login" },
+  { name: "Login", icon: "heroicons:user-group", to: "/login" },
   { name: "Daftar Dokter", icon: "heroicons:user-group", to: "/daftar-dokter" },
   { name: "Daftar Poli", icon: "heroicons:building-office-2", to: "/daftar-poli" },
   { name: "Layanan Unggulan", icon: "heroicons:star", to: "/layanan-unggulan" },
@@ -64,13 +79,88 @@ const menus: Menu[] = [
     icon: "heroicons:building-office-2",
     to: "/daftar-unit-kerja",
   },
-  { name: "Laporan", icon: "heroicons:chart-bar", to: "/laporan-admin" },
+  {
+    name: "Content",
+    icon: "heroicons:clipboard-document",
+    children: [
+      { name: "Slider", icon: "heroicons:document-plus", to: "/slider" },
+      { name: "Berita", icon: "heroicons:document-plus", to: "/berita" },
+      {
+        name: "Konten Instagram",
+        icon: "heroicons:document-plus",
+        to: "/konten-instagram",
+      },
+      { name: "Podkies", icon: "heroicons:document-plus", to: "/podkies" },
+      { name: "Inovasi", icon: "heroicons:document-plus", to: "/inovasi" },
+      {
+        name: "Hari Peringatan",
+        icon: "heroicons:document-plus",
+        to: "/hari-peringatan",
+      },
+      {
+        name: "Pengaduan Layanan Publik",
+        icon: "heroicons:document-plus",
+        to: "/pengaduan-layanan-publik",
+      },
+      {
+        name: "Pemohonan Informasi",
+        icon: "heroicons:document-plus",
+        to: "/pemohonan-informasi",
+      },
+      {
+        name: "Keberatan Atas Permohonan Informasi",
+        icon: "heroicons:document-plus",
+        to: "/keberatan-atas-permohonan-informasi",
+      },
+      {
+        name: "Kerjasama Pembiayaan",
+        icon: "heroicons:document-plus",
+        to: "/kerjasama-pembiayaan",
+      },
+    ],
+  },
+  {
+    name: "Profile",
+    icon: "heroicons:user-circle",
+    children: [
+      {
+        name: "Sumber Daya Manusia",
+        icon: "heroicons:document-text",
+        to: "/sumber-daya-manusia",
+      },
+      { name: "Haki", icon: "heroicons:document-text", to: "/haki" },
+    ],
+  },
+  {
+    name: "Promosi Kesehatan",
+    icon: "heroicons:squares-plus",
+    children: [
+      {
+        name: "Edukasi Kesehatan",
+        icon: "heroicons:clipboard-document-list",
+        to: "/edukasi-kesehatan",
+      },
+      {
+        name: "Majalah Mimbar",
+        icon: "heroicons:clipboard-document-list",
+        to: "/majalah-mimbar",
+      },
+    ],
+  },
 ];
 
 const currentPath = computed(() => route.path);
 
 function isActiveMenu(item: Menu): boolean {
-  return currentPath.value.startsWith(item.to);
+  if (item.to) {
+    return currentPath.value.startsWith(item.to);
+  }
+
+  if (item.children) {
+    return item.children.some((child) => currentPath.value.startsWith(child.to || ""));
+  }
+
+  return false;
 }
 
 const sidebarRef = ref<HTMLElement | null>(null);
@@ -161,65 +251,87 @@ function toggleSidebar() {
       <nav
         class="flex-1 px-3 py-6 space-y-2 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-slate-700 scrollbar-track-transparent"
       >
-        <NuxtLink
-          v-for="(item, index) in menus"
-          :key="item.name"
-          :to="item.to"
-          :class="[
-            'relative flex items-center gap-3.5 px-4 py-3.5 rounded-2xl transition-all duration-300 group overflow-hidden',
-            isCollapsed ? 'lg:justify-center' : '',
-            isActiveMenu(item)
-              ? 'bg-linear-to-r from-green-500 to-emerald-600 text-white shadow-lg shadow-green-500/25 dark:shadow-green-500/20 scale-[1.02]'
-              : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800/50 hover:text-gray-900 dark:hover:text-slate-200',
-          ]"
-          :style="{ animationDelay: `${index * 50}ms` }"
-        >
-          <!-- Background Hover Effect -->
-          <div
-            v-if="!isActiveMenu(item)"
-            class="absolute inset-0 bg-linear-to-r from-green-500/0 via-green-500/5 to-green-500/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700"
-          />
-
-          <!-- Active Indicator -->
-          <div
-            v-if="isActiveMenu(item)"
-            class="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-white rounded-r-full shadow-[0_0_10px_rgba(255,255,255,0.5)]"
-          />
-
-          <!-- Icon dengan Glow Effect -->
-          <div class="relative">
-            <div
-              v-if="isActiveMenu(item)"
-              class="absolute inset-0 bg-white/30 blur-md rounded-full"
-            />
-            <UIcon
-              :name="item.icon"
-              class="w-5 h-5 relative z-10 transition-transform duration-300 group-hover:scale-110"
-              :class="
-                isActiveMenu(item)
-                  ? 'text-white'
-                  : 'group-hover:text-green-500 dark:group-hover:text-green-400'
-              "
-            />
-          </div>
-
-          <!-- Text dengan Animation -->
-          <span
+        <template v-for="(item, index) in menus" :key="item.name">
+          <!-- ===================== -->
+          <!-- MENU TANPA CHILDREN -->
+          <!-- ===================== -->
+          <NuxtLink
+            v-if="!item.children"
+            :to="item.to!"
             :class="[
-              'relative z-10 font-medium whitespace-nowrap transition-all duration-500',
-              isCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : 'opacity-100',
+              'flex items-center gap-3.5 px-4 py-3.5 rounded-2xl transition-all duration-300 group',
+              isCollapsed ? 'lg:justify-center' : '',
+              isActiveMenu(item)
+                ? 'bg-green-500 text-white shadow-lg'
+                : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800/50',
             ]"
           >
-            {{ item.name }}
-          </span>
+            <UIcon :name="item.icon" class="w-5 h-5 shrink-0" />
+            <span
+              :class="['transition-all duration-500', isCollapsed ? 'lg:hidden' : '']"
+            >
+              {{ item.name }}
+            </span>
+          </NuxtLink>
 
-          <!-- Active Arrow -->
-          <UIcon
-            v-if="isActiveMenu(item) && !isCollapsed"
-            name="heroicons:chevron-right"
-            class="w-4 h-4 ml-auto opacity-70"
-          />
-        </NuxtLink>
+          <!-- ===================== -->
+          <!-- MENU DENGAN DROPDOWN -->
+          <!-- ===================== -->
+          <div v-else>
+            <!-- Parent -->
+            <button
+              @click="toggleDropdown(item.name)"
+              :class="[
+                'w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl transition-all duration-300',
+                isCollapsed ? 'lg:justify-center' : '',
+                isActiveMenu(item)
+                  ? 'bg-green-500 text-white shadow-lg'
+                  : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800/50',
+              ]"
+            >
+              <UIcon :name="item.icon" class="w-5 h-5 shrink-0" />
+
+              <span
+                :class="[
+                  'flex-1 text-left transition-all duration-500',
+                  isCollapsed ? 'lg:hidden' : '',
+                ]"
+              >
+                {{ item.name }}
+              </span>
+
+              <UIcon
+                v-if="!isCollapsed"
+                name="heroicons:chevron-down"
+                class="w-5 h-5 transition-transform duration-300"
+                :class="{ 'rotate-180': isDropdownOpen(item.name) }"
+              />
+            </button>
+
+            <!-- Children -->
+            <Transition name="fade">
+              <div
+                v-show="isDropdownOpen(item.name) && !isCollapsed"
+                class="ml-5 mt-2 space-y-1 gap-y-3.5"
+              >
+                <NuxtLink
+                  v-for="child in item.children"
+                  :key="child.name"
+                  :to="child.to!"
+                  class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all duration-300"
+                  :class="[
+              currentPath.startsWith(child.to!)
+                ? 'bg-green-100 text-green-700 dark:bg-green-900/30'
+                : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-slate-800'
+            ]"
+                >
+                  <UIcon :name="child.icon" class="w-5 h-5 shrink-0" />
+                  {{ child.name }}
+                </NuxtLink>
+              </div>
+            </Transition>
+          </div>
+        </template>
       </nav>
 
       <!-- Dark Mode Toggle Section -->
