@@ -1,9 +1,10 @@
 <template>
+  <!-- Start Section -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
     <UCard class="bg-linear-to-br from-blue-500 to-blue-600 text-white border-0">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-blue-100 text-sm">Total Pengguna</p>
+          <p class="text-blue-100 text-sm">Total User</p>
           <p class="text-3xl font-bold">
             {{ statistikHariIni.totalpengguna }}
           </p>
@@ -36,28 +37,49 @@
       </div>
     </UCard>
   </div>
-  <!-- Pembedahan Section -->
+  <!-- End Start Section -->
+  <!-- TOP ACTION -->
   <div
     class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700"
   >
     <!-- Add Team Button -->
-    <div class="flex justify-end">
+    <!-- TOP ACTION -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+      <!-- SEARCH -->
+      <div class="relative w-full sm:w-72 group">
+        <!-- SEARCH ICON -->
+        <UIcon
+          name="i-heroicons-magnifying-glass"
+          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-500 transition"
+        />
+
+        <!-- CLEAR BUTTON -->
+        <button
+          v-if="search"
+          @click="search = ''"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+        >
+          <UIcon name="i-heroicons-x-mark" class="w-4 h-4" />
+        </button>
+
+        <!-- INPUT -->
+        <input
+          v-model="search"
+          type="text"
+          placeholder="Cari nama atau posisi..."
+          class="w-full pl-10 pr-9 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm transition focus:ring-2 focus:ring-blue-500 hover:shadow-md"
+        />
+      </div>
+
+      <!-- ADD BUTTON -->
       <button
         @click="showModal = true"
-        class="mt-4 bg-emerald-500 dark:bg-emerald-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-emerald-600 dark:hover:bg-emerald-700 transition-colors flex items-center gap-2 shadow-sm"
+        class="bg-emerald-500 dark:bg-emerald-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-emerald-600 dark:hover:bg-emerald-700 transition flex items-center gap-2 shadow-sm"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 4v16m8-8H4"
-          />
-        </svg>
-        Tambah User
+        <UIcon name="i-heroicons-plus-circle" class="w-5 h-5 text-white" />
+        Tambah
       </button>
     </div>
-
     <!-- Team Table -->
     <div
       class="mt-4 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden"
@@ -66,17 +88,22 @@
         <thead class="bg-slate-50 dark:bg-slate-900/50">
           <tr>
             <th
-              class="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400"
+              class="px-4 py-3 text-left text-sm font-semibold text-slate-800 dark:text-slate-400"
             >
               Nama Pengguna
             </th>
             <th
-              class="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400"
+              class="px-4 py-3 text-left text-sm font-semibold text-slate-800 dark:text-slate-400"
             >
               Posisi
             </th>
             <th
-              class="px-4 py-3 text-center text-xs font-semibold text-slate-600 dark:text-slate-400"
+              class="px-4 py-3 text-left text-sm font-semibold text-slate-800 dark:text-slate-400"
+            >
+              Status
+            </th>
+            <th
+              class="px-4 py-3 text-center text-sm font-semibold text-slate-800 dark:text-slate-400"
             >
               Aksi
             </th>
@@ -95,6 +122,18 @@
             </td>
             <td class="px-4 py-3 text-slate-700 dark:text-slate-300">
               {{ member.role }}
+            </td>
+            <td class="px-4 py-3">
+              <span
+                :class="[
+                  'px-2.5 py-1 text-xs font-medium rounded-full',
+                  member.status === 'aktif'
+                    ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30'
+                    : 'bg-rose-100 text-rose-700 dark:bg-rose-900/30',
+                ]"
+              >
+                {{ member.status === "aktif" ? "Aktif" : "Tidak Aktif" }}
+              </span>
             </td>
             <td class="px-4 py-3">
               <div class="flex justify-center gap-2">
@@ -118,9 +157,9 @@
           </tr>
         </tbody>
       </table>
-      <!-- Pagination -->
-      <!-- Pagination -->
     </div>
+    <!-- End Team Table -->
+    <!-- Pagination Info -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-6">
       <!-- Info -->
       <p class="text-sm text-slate-600 dark:text-slate-400">
@@ -175,6 +214,7 @@
         </button>
       </div>
     </div>
+    <!-- End Pagination Info -->
 
     <!-- MODAL -->
     <div
@@ -226,12 +266,54 @@
 
           <div>
             <label class="text-sm text-slate-600 dark:text-slate-400"> Posisi </label>
-            <input
+
+            <select
               v-model="form.role"
-              type="text"
-              placeholder="Contoh: Admin"
-              class="mt-1 w-full px-3 py-2 border rounded-lg bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-sm focus:ring-2 focus:ring-emerald-500"
-            />
+              class="mt-1 w-full px-3 py-2.5 rounded-lg border bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            >
+              <option disabled value="">Pilih Posisi</option>
+              <option v-for="role in roles" :key="role" :value="role">
+                {{ role }}
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-sm text-slate-600 dark:text-slate-400 block mb-2">
+              Status
+            </label>
+
+            <div class="flex gap-4">
+              <!-- AKTIF -->
+              <label
+                class="flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer border-emerald-200 bg-emerald-50 dark:bg-emerald-900/20"
+              >
+                <input
+                  type="radio"
+                  value="aktif"
+                  v-model="form.status"
+                  class="text-emerald-500 focus:ring-emerald-500"
+                />
+                <span class="text-sm text-emerald-700 dark:text-emerald-300">
+                  Aktif
+                </span>
+              </label>
+
+              <!-- TIDAK AKTIF -->
+              <label
+                class="flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer border-rose-200 bg-rose-50 dark:bg-rose-900/20"
+              >
+                <input
+                  type="radio"
+                  value="tidak_aktif"
+                  v-model="form.status"
+                  class="text-rose-500 focus:ring-rose-500"
+                />
+                <span class="text-sm text-rose-700 dark:text-rose-300">
+                  Tidak Aktif
+                </span>
+              </label>
+            </div>
           </div>
         </div>
 
@@ -253,10 +335,11 @@
         </div>
       </div>
     </div>
+    <!-- End Modal -->
   </div>
 </template>
 <script setup lang="ts">
-import { reactive, ref, computed } from "vue";
+import { reactive, ref, computed, watch } from "vue";
 import Swal from "sweetalert2";
 const showModal = ref(false);
 const isEdit = ref(false);
@@ -265,14 +348,16 @@ const editIndex = ref<number | null>(null);
 const form = reactive({
   name: "",
   role: "",
+  status: "aktif",
   dataTableuser: [
-    { name: "Admin", role: "Administrator" },
-    { name: "Budi", role: "Operator" },
-    { name: "Sinta", role: "Manager" },
-    { name: "Joko", role: "Staff" },
-    { name: "Dewi", role: "Staff" },
+    { name: "Admin", role: "Administrator", status: "aktif" },
+    { name: "Budi", role: "Operator", status: "aktif" },
+    { name: "Sinta", role: "Manager", status: "tidak_aktif" },
+    { name: "Joko", role: "Staff", status: "aktif" },
   ],
 });
+
+const roles = ["Administrator", "Manager", "Operator", "Staff"];
 
 /* =====================
    CREATE / UPDATE USER
@@ -285,16 +370,32 @@ function saveUser() {
     form.dataTableuser[editIndex.value] = {
       name: form.name,
       role: form.role,
+      status: form.status,
     };
   } else {
     form.dataTableuser.push({
       name: form.name,
       role: form.role,
+      status: form.status,
     });
   }
 
   resetForm();
 }
+
+const search = ref("");
+
+watch(search, () => {
+  currentPage.value = 1;
+});
+
+const filteredUsers = computed(() => {
+  if (!search.value) return form.dataTableuser;
+
+  return form.dataTableuser.filter((user) =>
+    [user.name, user.role].join(" ").toLowerCase().includes(search.value.toLowerCase())
+  );
+});
 
 function resetForm() {
   form.name = "";
@@ -325,6 +426,7 @@ function editUser(index: number) {
 
   form.name = user.name;
   form.role = user.role;
+  form.status = user.status;
 
   editIndex.value = index;
   isEdit.value = true;
@@ -375,14 +477,14 @@ function deleteUser(index: number) {
 ===================== */
 
 const currentPage = ref(1);
-const perPage = 3;
+const perPage = 5;
 
-const totalPages = computed(() => Math.ceil(form.dataTableuser.length / perPage));
+const totalPages = computed(() => Math.ceil(filteredUsers.value.length / perPage));
 
 const paginatedUsers = computed(() => {
   const start = (currentPage.value - 1) * perPage;
   const end = start + perPage;
-  return form.dataTableuser.slice(start, end);
+  return filteredUsers.value.slice(start, end);
 });
 
 function nextPage() {
@@ -397,7 +499,7 @@ function prevPage() {
   }
 }
 
-const totalUsers = computed(() => form.dataTableuser.length);
+const totalUsers = computed(() => filteredUsers.value.length);
 const startItem = computed(() => (currentPage.value - 1) * perPage + 1);
 const endItem = computed(() => Math.min(currentPage.value * perPage, totalUsers.value));
 
@@ -406,10 +508,17 @@ const endItem = computed(() => Math.min(currentPage.value * perPage, totalUsers.
 ===================== */
 
 const statistikHariIni = computed(() => {
+  const total = form.dataTableuser.length;
+
+  const aktif = form.dataTableuser.filter((user) => user.status === "aktif").length;
+
+  const tidakAktif = form.dataTableuser.filter((user) => user.status === "tidak_aktif")
+    .length;
+
   return {
-    totalpengguna: form.dataTableuser.length,
-    totaluseraktif: form.dataTableuser.length,
-    totalusertidakatif: 0,
+    totalpengguna: total,
+    totaluseraktif: aktif,
+    totalusertidakatif: tidakAktif,
   };
 });
 </script>
