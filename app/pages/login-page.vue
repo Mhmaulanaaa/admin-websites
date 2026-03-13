@@ -30,7 +30,7 @@
         <div>
           <p class="text-green-100 text-sm">Total User Tidak Aktif</p>
           <p class="text-3xl font-bold">
-            {{ statistikHariIni.totalusertidakatif }}
+            {{ statistikHariIni.totalusertidakaktif }}
           </p>
         </div>
         <UIcon name="i-heroicons-users" class="w-8 h-8 text-green-200" />
@@ -527,7 +527,7 @@ const statistikHariIni = computed(() => {
   return {
     totalpengguna: total,
     totaluseraktif: aktif,
-    totalusertidakatif: tidakAktif,
+    totalusertidakaktif: tidakAktif,
   };
 });
 </script>
