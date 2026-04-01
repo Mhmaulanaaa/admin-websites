@@ -48,28 +48,28 @@ function isDropdownOpen(name: string) {
 
 const menus: Menu[] = [
   { name: "Dashboard", icon: "heroicons:squares-2x2", to: "/dashboard" },
-  { name: "Booking", icon: "heroicons:calendar-days", to: "/booking" },
-  {
-    name: "Verifikasi Pra-Bedah",
-    icon: "heroicons:clipboard-document-check",
-    to: "/verifikasi-pra-bedah",
-  },
-  {
-    name: "Manajemen IBP",
-    icon: "heroicons:building-office-2",
-    to: "/manajemen-ibp",
-  },
-  {
-    name: "Serah Terima",
-    icon: "heroicons:arrows-right-left",
-    to: "/serah-terima",
-  },
-  {
-    name: "Durante Operasi",
-    icon: "heroicons:plus-circle",
-    to: "/durante-operasi",
-  },
-  { name: "Laporan", icon: "heroicons:document-text", to: "/laporan" },
+  // { name: "Booking", icon: "heroicons:calendar-days", to: "/booking" },
+  // {
+  //   name: "Verifikasi Pra-Bedah",
+  //   icon: "heroicons:clipboard-document-check",
+  //   to: "/verifikasi-pra-bedah",
+  // },
+  // {
+  //   name: "Manajemen IBP",
+  //   icon: "heroicons:building-office-2",
+  //   to: "/manajemen-ibp",
+  // },
+  // {
+  //   name: "Serah Terima",
+  //   icon: "heroicons:arrows-right-left",
+  //   to: "/serah-terima",
+  // },
+  // {
+  //   name: "Durante Operasi",
+  //   icon: "heroicons:plus-circle",
+  //   to: "/durante-operasi",
+  // },
+  // { name: "Laporan", icon: "heroicons:document-text", to: "/laporan" },
   { name: "Login", icon: "heroicons:user-group", to: "/login-page" },
   { name: "Daftar Dokter", icon: "heroicons:user-group", to: "/daftar-dokter" },
   { name: "Daftar Poli", icon: "heroicons:building-office-2", to: "/daftar-poli" },
@@ -318,7 +318,7 @@ function toggleSidebar() {
                   v-for="child in item.children"
                   :key="child.name"
                   :to="child.to!"
-                  class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all duration-300"
+                  class="flex items-center gap-3 px-2 py-4 rounded-xl text-sm transition-all duration-300"
                   :class="[
               currentPath.startsWith(child.to!)
                 ? 'bg-green-100 text-green-700 dark:bg-green-900/30'
