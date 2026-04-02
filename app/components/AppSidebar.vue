@@ -70,14 +70,26 @@ const menus: Menu[] = [
   //   to: "/durante-operasi",
   // },
   // { name: "Laporan", icon: "heroicons:document-text", to: "/laporan" },
-  { name: "Login", icon: "heroicons:user-group", to: "/login-page" },
-  { name: "Daftar Dokter", icon: "heroicons:user-group", to: "/daftar-dokter" },
-  { name: "Daftar Poli", icon: "heroicons:building-office-2", to: "/daftar-poli" },
-  { name: "Layanan Unggulan", icon: "heroicons:star", to: "/layanan-unggulan" },
+  { name: "Login", icon: "heroicons:user-group", to: "/loginpage/login-page" },
+  {
+    name: "Daftar Dokter",
+    icon: "heroicons:user-group",
+    to: "/daftar-dokter/daftar-dokter",
+  },
+  {
+    name: "Daftar Poli",
+    icon: "heroicons:building-office-2",
+    to: "/daftar-poli/daftar-poli",
+  },
+  {
+    name: "Layanan Unggulan",
+    icon: "heroicons:star",
+    to: "/layanan-unggulan/layanan-unggulan",
+  },
   {
     name: "Daftar Unit Kerja",
     icon: "heroicons:building-office-2",
-    to: "/daftar-unit-kerja",
+    to: "/daftar-unitkerja/daftar-unit-kerja",
   },
   {
     name: "Content",

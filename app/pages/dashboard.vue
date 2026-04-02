@@ -3,6 +3,10 @@ definePageMeta({
   layout: "default",
 });
 
+useHead({
+  title: "Dashboard Admin",
+});
+
 const colorMode = useColorMode();
 
 /* ================= STATS ================= */

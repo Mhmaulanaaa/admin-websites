@@ -4,36 +4,36 @@
     <UCard class="bg-linear-to-br from-blue-500 to-blue-600 text-white border-0">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-blue-100 text-sm">Total Daftar Dokter</p>
+          <p class="text-blue-100 text-sm">Total Daftar Unit Kerja</p>
           <p class="text-3xl font-bold">
-            {{ statistikHariIni.totalpengguna }}
+            {{ statistikHariIni.totaldaftarunitkerja }}
           </p>
         </div>
-        <UIcon name="i-heroicons-user-group" class="w-8 h-8 text-blue-200" />
+        <UIcon name="i-heroicons-user-plus" class="w-8 h-8 text-blue-200" />
       </div>
     </UCard>
 
     <UCard class="bg-linear-to-br from-amber-500 to-amber-600 text-white border-0">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-amber-100 text-sm">Total Daftar Dokter Aktif</p>
+          <p class="text-amber-100 text-sm">Total Daftar Unit Kerja Aktif</p>
           <p class="text-3xl font-bold">
-            {{ statistikHariIni.totaluseraktif }}
+            {{ statistikHariIni.totaldaftarunitkerjaaktif }}
           </p>
         </div>
-        <UIcon name="i-heroicons-user-group" class="w-8 h-8 text-amber-200" />
+        <UIcon name="i-heroicons-user-plus" class="w-8 h-8 text-amber-200" />
       </div>
     </UCard>
 
     <UCard class="bg-linear-to-br from-green-500 to-green-600 text-white border-0">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-green-100 text-sm">Total Daftar Dokter Tidak Aktif</p>
+          <p class="text-green-100 text-sm">Total Daftar Unit Kerja Tidak Aktif</p>
           <p class="text-3xl font-bold">
-            {{ statistikHariIni.totalusertidakaktif }}
+            {{ statistikHariIni.totaldaftarunitkerjatidakaktif }}
           </p>
         </div>
-        <UIcon name="i-heroicons-user-group" class="w-8 h-8 text-green-200" />
+        <UIcon name="i-heroicons-user-plus" class="w-8 h-8 text-green-200" />
       </div>
     </UCard>
   </div>
@@ -66,7 +66,7 @@
         <input
           v-model="search"
           type="text"
-          placeholder="Cari nama dokter atau ksm..."
+          placeholder="Cari nama unit kerja..."
           class="w-full pl-10 pr-9 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm transition focus:ring-2 focus:ring-blue-500 hover:shadow-md"
         />
       </div>
@@ -90,12 +90,12 @@
             <th
               class="px-4 py-3 text-left text-sm font-semibold text-slate-800 dark:text-slate-400"
             >
-              Nama Dokter
+              Unit Kerja
             </th>
             <th
               class="px-4 py-3 text-left text-sm font-semibold text-slate-800 dark:text-slate-400"
             >
-              KSM
+              Hak Akses
             </th>
             <th
               class="px-4 py-3 text-left text-sm font-semibold text-slate-800 dark:text-slate-400"
@@ -118,10 +118,10 @@
             class="hover:bg-slate-50 dark:hover:bg-slate-700/50"
           >
             <td class="px-4 py-3 text-slate-700 dark:text-slate-300">
-              {{ member.namadokter }}
+              {{ member.unitkerja }}
             </td>
             <td class="px-4 py-3 text-slate-700 dark:text-slate-300">
-              {{ member.ksm }}
+              {{ member.hakakses }}
             </td>
             <td class="px-4 py-3">
               <span
@@ -254,31 +254,31 @@
         <div class="space-y-4">
           <div>
             <label class="text-sm text-slate-600 dark:text-slate-400">
-              Nama Dokter
+              Nama Unit Kerja
             </label>
 
             <USelectMenu
-              v-model="form.namadokter"
-              :items="namaDokterOptions"
+              v-model="form.unitkerja"
+              :items="namaUnitKerjaOptions"
               value-key="value"
               option-attribute="label"
               searchable
-              placeholder="Pilih Nama Dokter"
+              placeholder="Pilih Nama Unit Kerja"
               class="w-full"
               size="lg"
             />
           </div>
 
           <div>
-            <label class="text-sm text-slate-600 dark:text-slate-400"> KSM </label>
+            <label class="text-sm text-slate-600 dark:text-slate-400"> Hak Akses </label>
 
             <USelectMenu
-              v-model="form.ksm"
-              :items="roleOptions"
+              v-model="form.hakakses"
+              :items="hakAksesOptions"
               value-key="value"
               option-attribute="label"
               searchable
-              placeholder="Pilih KSM"
+              placeholder="Pilih Hak Akses"
               class="w-full"
               size="lg"
             />
@@ -346,8 +346,9 @@
 </template>
 <script setup lang="ts">
 useHead({
-  title: "Admin Daftar Dokter",
+  title: "Admin Daftar Unit Kerja",
 });
+import { toastSuccess, toastError, toastWarning } from "~/utils/toast";
 import { reactive, ref, computed, watch } from "vue";
 import Swal from "sweetalert2";
 const showModal = ref(false);
@@ -355,38 +356,61 @@ const isEdit = ref(false);
 const editIndex = ref<number | null>(null);
 
 const form = reactive({
-  namadokter: "",
-  ksm: "",
+  unitkerja: "",
+  hakakses: "",
   status: "aktif",
   dataTableuser: [
-    { namadokter: "Dr. Andi Wijaya", ksm: "KSM A", status: "aktif" },
-    { namadokter: "Dr. Siti Rahma", ksm: "KSM B", status: "tidak_aktif" },
-    { namadokter: "Dr. Budi Santoso", ksm: "KSM C", status: "aktif" },
-    { namadokter: "Dr. Lina Marlina", ksm: "KSM A", status: "tidak_aktif" },
-    { namadokter: "Dr. Rina Susanti", ksm: "KSM B", status: "aktif" },
-    { namadokter: "Dr. Agus Pratama", ksm: "KSM C", status: "aktif" },
+    {
+      unitkerja: "Instalasi Teknologi Komunikasi dan Informasi",
+      hakakses: "Superuser",
+      status: "aktif",
+    },
+    {
+      unitkerja: "Bidang Penelitian dan Pengembangan",
+      hakakses: "SuperAdmin",
+      status: "tidak_aktif",
+    },
+    {
+      unitkerja: "Instalasi Teknologi Komunikasi dan Informasi 	",
+      hakakses: "SuperAdmin",
+      status: "aktif",
+    },
+    {
+      unitkerja: "Bidang Penelitian dan Pengembangan",
+      hakakses: "SuperAdmin",
+      status: "aktif",
+    },
+    {
+      unitkerja: "Instalasi Teknologi Komunikasi dan Informasi 	",
+      hakakses: "SuperAdmin",
+      status: "tidak_aktif",
+    },
+    {
+      unitkerja: "Bidang Penelitian dan Pengembangan",
+      hakakses: "Superuser",
+      status: "aktif",
+    },
   ],
 });
 
-const roles = ["KSM A", "KSM B", "KSM C"];
+const hakAkses = ["Superuser", "SuperAdmin"];
 
-const roleOptions = roles.map((ksm) => ({
-  label: ksm,
-  value: ksm,
+const hakAksesOptions = hakAkses.map((hakakses) => ({
+  label: hakakses,
+  value: hakakses,
 }));
-
-const namadokter = [
-  "Dr. Andi Wijaya",
-  "Dr. Siti Rahma",
-  "Dr. Budi Santoso",
-  "Dr. Lina Marlina",
-  "Dr. Rina Susanti",
-  "Dr. Agus Pratama",
+const namaUnitKerja = [
+  "Instalasi Teknologi Komunikasi dan Informasi",
+  "Bidang Penelitian dan Pengembangan",
+  "Instalasi Teknologi Komunikasi dan Informasi 	",
+  "Bidang Penelitian dan Pengembangan",
+  "Instalasi Teknologi Komunikasi dan Informasi 	",
+  "Bidang Penelitian dan Pengembangan",
 ];
 
-const namaDokterOptions = namadokter.map((dokter) => ({
-  label: dokter,
-  value: dokter,
+const namaUnitKerjaOptions = namaUnitKerja.map((unitkerja) => ({
+  label: unitkerja,
+  value: unitkerja,
 }));
 
 /* =====================
@@ -394,23 +418,33 @@ const namaDokterOptions = namadokter.map((dokter) => ({
 ===================== */
 
 function saveUser() {
-  if (!form.ksm || !form.namadokter) return;
+  toastWarning("Unit Kerja dan Hak Akses wajib diisi");
+  if (!form.hakakses || !form.unitkerja) return;
 
-  if (isEdit.value && editIndex.value !== null) {
-    form.dataTableuser[editIndex.value] = {
-      namadokter: form.namadokter,
-      ksm: form.ksm,
-      status: form.status,
-    };
-  } else {
-    form.dataTableuser.push({
-      namadokter: form.namadokter,
-      ksm: form.ksm,
-      status: form.status,
-    });
+  try {
+    let message = "";
+    if (isEdit.value && editIndex.value !== null) {
+      form.dataTableuser[editIndex.value] = {
+        unitkerja: form.unitkerja,
+        hakakses: form.hakakses,
+        status: form.status,
+      };
+
+      message = "Data berhasil diupdate";
+    } else {
+      form.dataTableuser.push({
+        unitkerja: form.unitkerja,
+        hakakses: form.hakakses,
+        status: form.status,
+      });
+      message = "Data berhasil disimpan";
+    }
+    toastSuccess(message);
+
+    resetForm();
+  } catch (error) {
+    toastError("Terjadi kesalahan saat menyimpan data");
   }
-
-  resetForm();
 }
 
 const search = ref("");
@@ -423,7 +457,7 @@ const filteredUsers = computed(() => {
   if (!search.value) return form.dataTableuser;
 
   return form.dataTableuser.filter((user) =>
-    [user.ksm, user.namadokter]
+    [user.unitkerja, user.hakakses]
       .join(" ")
       .toLowerCase()
       .includes(search.value.toLowerCase())
@@ -431,8 +465,8 @@ const filteredUsers = computed(() => {
 });
 
 function resetForm() {
-  form.ksm = "";
-  form.namadokter = "";
+  form.unitkerja = "";
+  form.hakakses = "";
   showModal.value = false;
   isEdit.value = false;
   editIndex.value = null;
@@ -441,8 +475,8 @@ function resetForm() {
 function closeModal() {
   showModal.value = false;
 
-  form.ksm = "";
-  form.namadokter = "";
+  form.unitkerja = "";
+  form.hakakses = "";
   form.status = "aktif";
 
   isEdit.value = false;
@@ -458,8 +492,8 @@ function editUser(index: number) {
 
   if (!user) return;
 
-  form.namadokter = user.namadokter;
-  form.ksm = user.ksm;
+  form.unitkerja = user.unitkerja;
+  form.hakakses = user.hakakses;
   form.status = user.status;
 
   editIndex.value = index;
@@ -471,13 +505,13 @@ function editUser(index: number) {
    DELETE USER
 ===================== */
 
-function deleteUser(index: number) {
-  Swal.fire({
-    title: "Hapus User?",
+async function deleteUser(index: number) {
+  const result = await Swal.fire({
+    title: "Hapus Data Dokter?",
     text: "Data akan dihapus secara permanen",
     icon: "warning",
-    width: 380,
-    padding: "1.5rem",
+    width: 360,
+    padding: "1rem",
     showCancelButton: true,
     confirmButtonText: "Hapus",
     cancelButtonText: "Batal",
@@ -485,25 +519,24 @@ function deleteUser(index: number) {
     cancelButtonColor: "#94a3b8",
     reverseButtons: true,
     customClass: {
-      popup: "rounded-xl",
-      title: "text-lg font-semibold",
-      confirmButton: "px-4 py-2 rounded-lg text-sm",
-      cancelButton: "px-4 py-2 rounded-lg text-sm",
+      popup: "rounded-xl p-4",
+      title: "!text-sm !font-semibold",
+      htmlContainer: "!text-xs !text-gray-500",
+      confirmButton: "!text-xs px-3 py-1.5 rounded-lg",
+      cancelButton: "!text-xs px-3 py-1.5 rounded-lg",
     },
-  }).then((result) => {
-    if (result.isConfirmed) {
-      form.dataTableuser.splice(index, 1);
-
-      Swal.fire({
-        icon: "success",
-        title: "User dihapus",
-        text: "Data berhasil dihapus",
-        width: 350,
-        timer: 1200,
-        showConfirmButton: false,
-      });
-    }
   });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    form.dataTableuser.splice(index, 1);
+
+    // ✅ pakai toast (bukan popup lagi)
+    toastSuccess("Data Dokter berhasil dihapus");
+  } catch (err) {
+    toastError("Gagal menghapus Data Dokter");
+  }
 }
 
 /* =====================
@@ -550,9 +583,9 @@ const statistikHariIni = computed(() => {
     .length;
 
   return {
-    totalpengguna: total,
-    totaluseraktif: aktif,
-    totalusertidakaktif: tidakAktif,
+    totaldaftarunitkerja: total,
+    totaldaftarunitkerjaaktif: aktif,
+    totaldaftarunitkerjatidakaktif: tidakAktif,
   };
 });
 </script>

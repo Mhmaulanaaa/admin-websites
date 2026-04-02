@@ -4,7 +4,8 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/ui',
     '@pinia/nuxt',
-    '@nuxt/icon'
+    '@nuxt/icon',
+    '@nuxtjs/color-mode',
   ],
 
   devtools: {

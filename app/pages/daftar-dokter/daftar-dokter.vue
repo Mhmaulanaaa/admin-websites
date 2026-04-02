@@ -4,36 +4,36 @@
     <UCard class="bg-linear-to-br from-blue-500 to-blue-600 text-white border-0">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-blue-100 text-sm">Total User</p>
+          <p class="text-blue-100 text-sm">Total Daftar Dokter</p>
           <p class="text-3xl font-bold">
             {{ statistikHariIni.totalpengguna }}
           </p>
         </div>
-        <UIcon name="i-heroicons-users" class="w-8 h-8 text-blue-200" />
+        <UIcon name="i-heroicons-user-group" class="w-8 h-8 text-blue-200" />
       </div>
     </UCard>
 
     <UCard class="bg-linear-to-br from-amber-500 to-amber-600 text-white border-0">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-amber-100 text-sm">Total User Aktif</p>
+          <p class="text-amber-100 text-sm">Total Daftar Dokter Aktif</p>
           <p class="text-3xl font-bold">
             {{ statistikHariIni.totaluseraktif }}
           </p>
         </div>
-        <UIcon name="i-heroicons-users" class="w-8 h-8 text-amber-200" />
+        <UIcon name="i-heroicons-user-group" class="w-8 h-8 text-amber-200" />
       </div>
     </UCard>
 
     <UCard class="bg-linear-to-br from-green-500 to-green-600 text-white border-0">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-green-100 text-sm">Total User Tidak Aktif</p>
+          <p class="text-green-100 text-sm">Total Daftar Dokter Tidak Aktif</p>
           <p class="text-3xl font-bold">
             {{ statistikHariIni.totalusertidakaktif }}
           </p>
         </div>
-        <UIcon name="i-heroicons-users" class="w-8 h-8 text-green-200" />
+        <UIcon name="i-heroicons-user-group" class="w-8 h-8 text-green-200" />
       </div>
     </UCard>
   </div>
@@ -66,7 +66,7 @@
         <input
           v-model="search"
           type="text"
-          placeholder="Cari nama atau posisi..."
+          placeholder="Cari nama dokter atau ksm..."
           class="w-full pl-10 pr-9 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm transition focus:ring-2 focus:ring-blue-500 hover:shadow-md"
         />
       </div>
@@ -90,12 +90,12 @@
             <th
               class="px-4 py-3 text-left text-sm font-semibold text-slate-800 dark:text-slate-400"
             >
-              Nama Pengguna
+              Nama Dokter
             </th>
             <th
               class="px-4 py-3 text-left text-sm font-semibold text-slate-800 dark:text-slate-400"
             >
-              Posisi
+              KSM
             </th>
             <th
               class="px-4 py-3 text-left text-sm font-semibold text-slate-800 dark:text-slate-400"
@@ -118,10 +118,10 @@
             class="hover:bg-slate-50 dark:hover:bg-slate-700/50"
           >
             <td class="px-4 py-3 text-slate-700 dark:text-slate-300">
-              {{ member.name }}
+              {{ member.namadokter }}
             </td>
             <td class="px-4 py-3 text-slate-700 dark:text-slate-300">
-              {{ member.role }}
+              {{ member.ksm }}
             </td>
             <td class="px-4 py-3">
               <span
@@ -254,26 +254,31 @@
         <div class="space-y-4">
           <div>
             <label class="text-sm text-slate-600 dark:text-slate-400">
-              Nama Pengguna
+              Nama Dokter
             </label>
-            <input
-              v-model="form.name"
-              type="text"
-              placeholder="Masukkan nama"
-              class="mt-1 w-full px-3 py-2 border rounded-lg bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-sm focus:ring-2 focus:ring-emerald-500"
+
+            <USelectMenu
+              v-model="form.namadokter"
+              :items="namaDokterOptions"
+              value-key="value"
+              option-attribute="label"
+              searchable
+              placeholder="Pilih Nama Dokter"
+              class="w-full"
+              size="lg"
             />
           </div>
 
           <div>
-            <label class="text-sm text-slate-600 dark:text-slate-400"> Posisi </label>
+            <label class="text-sm text-slate-600 dark:text-slate-400"> KSM </label>
 
             <USelectMenu
-              v-model="form.role"
+              v-model="form.ksm"
               :items="roleOptions"
               value-key="value"
               option-attribute="label"
               searchable
-              placeholder="Pilih Posisi"
+              placeholder="Pilih KSM"
               class="w-full"
               size="lg"
             />
@@ -341,8 +346,9 @@
 </template>
 <script setup lang="ts">
 useHead({
-  title: "Admin Login Page",
+  title: "Admin Daftar Dokter",
 });
+import { toastSuccess, toastError, toastWarning } from "~/utils/toast";
 import { reactive, ref, computed, watch } from "vue";
 import Swal from "sweetalert2";
 const showModal = ref(false);
@@ -350,46 +356,74 @@ const isEdit = ref(false);
 const editIndex = ref<number | null>(null);
 
 const form = reactive({
-  name: "",
-  role: "",
+  namadokter: "",
+  ksm: "",
   status: "aktif",
   dataTableuser: [
-    { name: "Admin", role: "Administrator", status: "aktif" },
-    { name: "Budi", role: "Operator", status: "aktif" },
-    { name: "Sinta", role: "Manager", status: "tidak_aktif" },
-    { name: "Joko", role: "Staff", status: "aktif" },
+    { namadokter: "Dr. Andi Wijaya", ksm: "KSM A", status: "aktif" },
+    { namadokter: "Dr. Siti Rahma", ksm: "KSM B", status: "tidak_aktif" },
+    { namadokter: "Dr. Budi Santoso", ksm: "KSM C", status: "aktif" },
+    { namadokter: "Dr. Lina Marlina", ksm: "KSM A", status: "tidak_aktif" },
+    { namadokter: "Dr. Rina Susanti", ksm: "KSM B", status: "aktif" },
+    { namadokter: "Dr. Agus Pratama", ksm: "KSM C", status: "aktif" },
   ],
 });
 
-const roles = ["Admin", "User", "Manager"];
+const roles = ["KSM A", "KSM B", "KSM C"];
 
-const roleOptions = roles.map((role) => ({
-  label: role,
-  value: role,
+const roleOptions = roles.map((ksm) => ({
+  label: ksm,
+  value: ksm,
+}));
+
+const namadokter = [
+  "Dr. Andi Wijaya",
+  "Dr. Siti Rahma",
+  "Dr. Budi Santoso",
+  "Dr. Lina Marlina",
+  "Dr. Rina Susanti",
+  "Dr. Agus Pratama",
+];
+
+const namaDokterOptions = namadokter.map((dokter) => ({
+  label: dokter,
+  value: dokter,
 }));
 
 /* =====================
    CREATE / UPDATE USER
 ===================== */
 
-function saveUser() {
-  if (!form.name || !form.role) return;
+async function saveUser() {
+  toastWarning("KSM dan nama dokter wajib diisi");
+  if (!form.ksm || !form.namadokter) return;
 
-  if (isEdit.value && editIndex.value !== null) {
-    form.dataTableuser[editIndex.value] = {
-      name: form.name,
-      role: form.role,
-      status: form.status,
-    };
-  } else {
-    form.dataTableuser.push({
-      name: form.name,
-      role: form.role,
-      status: form.status,
-    });
+  try {
+    let message = "";
+    if (isEdit.value && editIndex.value !== null) {
+      form.dataTableuser[editIndex.value] = {
+        namadokter: form.namadokter,
+        ksm: form.ksm,
+        status: form.status,
+      };
+
+      message = "Data berhasil diupdate";
+    } else {
+      form.dataTableuser.push({
+        namadokter: form.namadokter,
+        ksm: form.ksm,
+        status: form.status,
+      });
+
+      message = "Data berhasil disimpan";
+    }
+
+    toastSuccess(message);
+
+    resetForm();
+  } catch (error) {
+    toastError("Terjadi kesalahan saat menyimpan data");
   }
-
-  resetForm();
 }
 
 const search = ref("");
@@ -402,13 +436,16 @@ const filteredUsers = computed(() => {
   if (!search.value) return form.dataTableuser;
 
   return form.dataTableuser.filter((user) =>
-    [user.name, user.role].join(" ").toLowerCase().includes(search.value.toLowerCase())
+    [user.ksm, user.namadokter]
+      .join(" ")
+      .toLowerCase()
+      .includes(search.value.toLowerCase())
   );
 });
 
 function resetForm() {
-  form.name = "";
-  form.role = "";
+  form.ksm = "";
+  form.namadokter = "";
   showModal.value = false;
   isEdit.value = false;
   editIndex.value = null;
@@ -417,8 +454,9 @@ function resetForm() {
 function closeModal() {
   showModal.value = false;
 
-  form.name = "";
-  form.role = "";
+  form.ksm = "";
+  form.namadokter = "";
+  form.status = "aktif";
 
   isEdit.value = false;
   editIndex.value = null;
@@ -433,8 +471,8 @@ function editUser(index: number) {
 
   if (!user) return;
 
-  form.name = user.name;
-  form.role = user.role;
+  form.namadokter = user.namadokter;
+  form.ksm = user.ksm;
   form.status = user.status;
 
   editIndex.value = index;
@@ -446,13 +484,13 @@ function editUser(index: number) {
    DELETE USER
 ===================== */
 
-function deleteUser(index: number) {
-  Swal.fire({
-    title: "Hapus User?",
+async function deleteUser(index: number) {
+  const result = await Swal.fire({
+    title: "Hapus Data Dokter?",
     text: "Data akan dihapus secara permanen",
     icon: "warning",
-    width: 380,
-    padding: "1.5rem",
+    width: 360,
+    padding: "1rem",
     showCancelButton: true,
     confirmButtonText: "Hapus",
     cancelButtonText: "Batal",
@@ -460,25 +498,24 @@ function deleteUser(index: number) {
     cancelButtonColor: "#94a3b8",
     reverseButtons: true,
     customClass: {
-      popup: "rounded-xl",
-      title: "text-lg font-semibold",
-      confirmButton: "px-4 py-2 rounded-lg text-sm",
-      cancelButton: "px-4 py-2 rounded-lg text-sm",
+      popup: "rounded-xl p-4",
+      title: "!text-sm !font-semibold",
+      htmlContainer: "!text-xs !text-gray-500",
+      confirmButton: "!text-xs px-3 py-1.5 rounded-lg",
+      cancelButton: "!text-xs px-3 py-1.5 rounded-lg",
     },
-  }).then((result) => {
-    if (result.isConfirmed) {
-      form.dataTableuser.splice(index, 1);
-
-      Swal.fire({
-        icon: "success",
-        title: "User dihapus",
-        text: "Data berhasil dihapus",
-        width: 350,
-        timer: 1200,
-        showConfirmButton: false,
-      });
-    }
   });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    form.dataTableuser.splice(index, 1);
+
+    // ✅ pakai toast (bukan popup lagi)
+    toastSuccess("Data Dokter berhasil dihapus");
+  } catch (err) {
+    toastError("Gagal menghapus Data Dokter");
+  }
 }
 
 /* =====================

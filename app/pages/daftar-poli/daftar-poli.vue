@@ -4,9 +4,9 @@
     <UCard class="bg-linear-to-br from-blue-500 to-blue-600 text-white border-0">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-blue-100 text-sm">Total Daftar Laynanan Unggulan</p>
+          <p class="text-blue-100 text-sm">Total Daftar Poli</p>
           <p class="text-3xl font-bold">
-            {{ statistikHariIni.totaldaftarlayananunggulan }}
+            {{ statistikHariIni.totaldaftarpoli }}
           </p>
         </div>
         <UIcon name="i-heroicons-user-plus" class="w-8 h-8 text-blue-200" />
@@ -16,9 +16,9 @@
     <UCard class="bg-linear-to-br from-amber-500 to-amber-600 text-white border-0">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-amber-100 text-sm">Total Daftar Laynanan Unggulan Aktif</p>
+          <p class="text-amber-100 text-sm">Total Daftar Poli Aktif</p>
           <p class="text-3xl font-bold">
-            {{ statistikHariIni.totaldaftarlayananunggulanaktif }}
+            {{ statistikHariIni.totaldaftarpoliaktif }}
           </p>
         </div>
         <UIcon name="i-heroicons-user-plus" class="w-8 h-8 text-amber-200" />
@@ -28,9 +28,9 @@
     <UCard class="bg-linear-to-br from-green-500 to-green-600 text-white border-0">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-green-100 text-sm">Total Daftar Laynanan Unggulan Tidak Aktif</p>
+          <p class="text-green-100 text-sm">Total Daftar Poli Tidak Aktif</p>
           <p class="text-3xl font-bold">
-            {{ statistikHariIni.totaldaftarlayananunggulantidakaktif }}
+            {{ statistikHariIni.totaldaftarpolitidakaktif }}
           </p>
         </div>
         <UIcon name="i-heroicons-user-plus" class="w-8 h-8 text-green-200" />
@@ -66,7 +66,7 @@
         <input
           v-model="search"
           type="text"
-          placeholder="Cari nama unit kerja..."
+          placeholder="Cari nama poli atau divisi..."
           class="w-full pl-10 pr-9 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm transition focus:ring-2 focus:ring-blue-500 hover:shadow-md"
         />
       </div>
@@ -90,12 +90,12 @@
             <th
               class="px-4 py-3 text-left text-sm font-semibold text-slate-800 dark:text-slate-400"
             >
-              Layanan Unggulan
+              Nama Poli
             </th>
             <th
               class="px-4 py-3 text-left text-sm font-semibold text-slate-800 dark:text-slate-400"
             >
-              Hak Akses
+              Divisi
             </th>
             <th
               class="px-4 py-3 text-left text-sm font-semibold text-slate-800 dark:text-slate-400"
@@ -118,10 +118,10 @@
             class="hover:bg-slate-50 dark:hover:bg-slate-700/50"
           >
             <td class="px-4 py-3 text-slate-700 dark:text-slate-300">
-              {{ member.unitkerja }}
+              {{ member.namapoli }}
             </td>
             <td class="px-4 py-3 text-slate-700 dark:text-slate-300">
-              {{ member.hakakses }}
+              {{ member.divisi }}
             </td>
             <td class="px-4 py-3">
               <span
@@ -247,38 +247,36 @@
 
         <!-- TITLE -->
         <h2 class="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-4">
-          {{ isEdit ? "Edit Layanan Unggulan" : "Tambah Layanan Unggulan" }}
+          {{ isEdit ? "Edit User" : "Tambah User" }}
         </h2>
 
         <!-- INPUT -->
         <div class="space-y-4">
           <div>
-            <label class="text-sm text-slate-600 dark:text-slate-400">
-              Nama Layanan Unggulan
-            </label>
+            <label class="text-sm text-slate-600 dark:text-slate-400"> Nama Poli </label>
 
             <USelectMenu
-              v-model="form.unitkerja"
-              :items="namaUnitKerjaOptions"
+              v-model="form.namapoli"
+              :items="namaPoliOptions"
               value-key="value"
               option-attribute="label"
               searchable
-              placeholder="Pilih Nama Layanan Unggulan"
+              placeholder="Pilih Nama Poli"
               class="w-full"
               size="lg"
             />
           </div>
 
           <div>
-            <label class="text-sm text-slate-600 dark:text-slate-400"> Hak Akses </label>
+            <label class="text-sm text-slate-600 dark:text-slate-400"> Divisi </label>
 
             <USelectMenu
-              v-model="form.hakakses"
-              :items="hakAksesOptions"
+              v-model="form.divisi"
+              :items="divisiOptions"
               value-key="value"
               option-attribute="label"
               searchable
-              placeholder="Pilih Hak Akses"
+              placeholder="Pilih Divisi"
               class="w-full"
               size="lg"
             />
@@ -348,85 +346,91 @@
 useHead({
   title: "Admin Daftar Poli",
 });
+import { toastSuccess, toastError, toastWarning } from "~/utils/toast";
 import { reactive, ref, computed, watch } from "vue";
 import Swal from "sweetalert2";
+import { toast } from "vue-sonner";
 const showModal = ref(false);
 const isEdit = ref(false);
 const editIndex = ref<number | null>(null);
 
 const form = reactive({
-  unitkerja: "",
-  hakakses: "",
+  namapoli: "",
+  divisi: "",
   status: "aktif",
   dataTableuser: [
     {
-      unitkerja: "Immunotherapy Clinic",
-      hakakses: "Superuser",
+      namapoli: "Poli Anak",
+      divisi: "Alergi Imunologi Anak",
       status: "aktif",
     },
-    {
-      unitkerja: "Aesthetic CLinic",
-      hakakses: "SuperAdmin",
-      status: "tidak_aktif",
-    },
-    {
-      unitkerja: "Immunotherapy Clinic",
-      hakakses: "SuperAdmin",
-      status: "aktif",
-    },
-    {
-      unitkerja: "Aesthetic CLinic",
-      hakakses: "SuperAdmin",
-      status: "aktif",
-    },
-    {
-      unitkerja: "Immunotherapy Clinic",
-      hakakses: "SuperAdmin",
-      status: "tidak_aktif",
-    },
-    {
-      unitkerja: "Aesthetic CLinic",
-      hakakses: "Superuser",
-      status: "aktif",
-    },
+    { namapoli: "Poli Anak", divisi: "Alergi Imunologi Anak", status: "tidak_aktif" },
+    { namapoli: "Poli Anak", divisi: "Endokrinologi", status: "aktif" },
+    { namapoli: "Poli Anak", divisi: "Gastro Anak", status: "aktif" },
+    { namapoli: "Poli Anak", divisi: "Gizi Anak", status: "tidak_aktif" },
+    { namapoli: "Poli Anak", divisi: "Hematologi", status: "aktif" },
   ],
 });
 
-const hakAkses = ["Superuser", "SuperAdmin"];
+const divisi = [
+  "Alergi Imunologi Anak",
+  "Endokrinologi",
+  "Gastro Anak",
+  "Gizi Anak",
+  "Hematologi",
+];
 
-const hakAksesOptions = hakAkses.map((hakakses) => ({
-  label: hakakses,
-  value: hakakses,
+const divisiOptions = divisi.map((divisi) => ({
+  label: divisi,
+  value: divisi,
 }));
-const namaUnitKerja = ["Immunotherapy Clinic", "Aesthetic CLinic"];
 
-const namaUnitKerjaOptions = namaUnitKerja.map((unitkerja) => ({
-  label: unitkerja,
-  value: unitkerja,
+const poli = [
+  "Dr. Andi Wijaya",
+  "Dr. Siti Rahma",
+  "Dr. Budi Santoso",
+  "Dr. Lina Marlina",
+  "Dr. Rina Susanti",
+  "Dr. Agus Pratama",
+];
+
+const namaPoliOptions = poli.map((poli) => ({
+  label: poli,
+  value: poli,
 }));
 
 /* =====================
    CREATE / UPDATE USER
 ===================== */
 
-function saveUser() {
-  if (!form.hakakses || !form.unitkerja) return;
+async function saveUser() {
+  toastWarning("Nama poli dan divisi wajib diisi");
+  if (!form.divisi || !form.namapoli) return;
 
-  if (isEdit.value && editIndex.value !== null) {
-    form.dataTableuser[editIndex.value] = {
-      unitkerja: form.unitkerja,
-      hakakses: form.hakakses,
-      status: form.status,
-    };
-  } else {
-    form.dataTableuser.push({
-      unitkerja: form.unitkerja,
-      hakakses: form.hakakses,
-      status: form.status,
-    });
+  try {
+    let message = "";
+    if (isEdit.value && editIndex.value !== null) {
+      form.dataTableuser[editIndex.value] = {
+        namapoli: form.namapoli,
+        divisi: form.divisi,
+        status: form.status,
+      };
+
+      message = "Data berhasil diupdate";
+    } else {
+      form.dataTableuser.push({
+        namapoli: form.namapoli,
+        divisi: form.divisi,
+        status: form.status,
+      });
+
+      message = "Data berhasil disimpan";
+    }
+
+    resetForm();
+  } catch (error) {
+    toastError("Terjadi kesalahan saat menyimpan data");
   }
-
-  resetForm();
 }
 
 const search = ref("");
@@ -439,7 +443,7 @@ const filteredUsers = computed(() => {
   if (!search.value) return form.dataTableuser;
 
   return form.dataTableuser.filter((user) =>
-    [user.unitkerja, user.hakakses]
+    [user.divisi, user.namapoli]
       .join(" ")
       .toLowerCase()
       .includes(search.value.toLowerCase())
@@ -447,8 +451,8 @@ const filteredUsers = computed(() => {
 });
 
 function resetForm() {
-  form.unitkerja = "";
-  form.hakakses = "";
+  form.divisi = "";
+  form.namapoli = "";
   showModal.value = false;
   isEdit.value = false;
   editIndex.value = null;
@@ -457,8 +461,8 @@ function resetForm() {
 function closeModal() {
   showModal.value = false;
 
-  form.unitkerja = "";
-  form.hakakses = "";
+  form.divisi = "";
+  form.namapoli = "";
   form.status = "aktif";
 
   isEdit.value = false;
@@ -474,8 +478,8 @@ function editUser(index: number) {
 
   if (!user) return;
 
-  form.unitkerja = user.unitkerja;
-  form.hakakses = user.hakakses;
+  form.namapoli = user.namapoli;
+  form.divisi = user.divisi;
   form.status = user.status;
 
   editIndex.value = index;
@@ -487,13 +491,13 @@ function editUser(index: number) {
    DELETE USER
 ===================== */
 
-function deleteUser(index: number) {
-  Swal.fire({
-    title: "Hapus User?",
+async function deleteUser(index: number) {
+  const result = await Swal.fire({
+    title: "Hapus Data Poli?",
     text: "Data akan dihapus secara permanen",
     icon: "warning",
-    width: 380,
-    padding: "1.5rem",
+    width: 360,
+    padding: "1rem",
     showCancelButton: true,
     confirmButtonText: "Hapus",
     cancelButtonText: "Batal",
@@ -501,25 +505,24 @@ function deleteUser(index: number) {
     cancelButtonColor: "#94a3b8",
     reverseButtons: true,
     customClass: {
-      popup: "rounded-xl",
-      title: "text-lg font-semibold",
-      confirmButton: "px-4 py-2 rounded-lg text-sm",
-      cancelButton: "px-4 py-2 rounded-lg text-sm",
+      popup: "rounded-xl p-4",
+      title: "!text-sm !font-semibold",
+      htmlContainer: "!text-xs !text-gray-500",
+      confirmButton: "!text-xs px-3 py-1.5 rounded-lg",
+      cancelButton: "!text-xs px-3 py-1.5 rounded-lg",
     },
-  }).then((result) => {
-    if (result.isConfirmed) {
-      form.dataTableuser.splice(index, 1);
-
-      Swal.fire({
-        icon: "success",
-        title: "User dihapus",
-        text: "Data berhasil dihapus",
-        width: 350,
-        timer: 1200,
-        showConfirmButton: false,
-      });
-    }
   });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    form.dataTableuser.splice(index, 1);
+
+    // ✅ pakai toast (bukan popup lagi)
+    toastSuccess("Data Poli berhasil dihapus");
+  } catch (err) {
+    toastError("Gagal menghapus Data Poli");
+  }
 }
 
 /* =====================
@@ -566,9 +569,9 @@ const statistikHariIni = computed(() => {
     .length;
 
   return {
-    totaldaftarlayananunggulan: total,
-    totaldaftarlayananunggulanaktif: aktif,
-    totaldaftarlayananunggulantidakaktif: tidakAktif,
+    totaldaftarpoli: total,
+    totaldaftarpoliaktif: aktif,
+    totaldaftarpolitidakaktif: tidakAktif,
   };
 });
 </script>

@@ -4,36 +4,36 @@
     <UCard class="bg-linear-to-br from-blue-500 to-blue-600 text-white border-0">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-blue-100 text-sm">Total Daftar Unit Kerja</p>
+          <p class="text-blue-100 text-sm">Total User</p>
           <p class="text-3xl font-bold">
-            {{ statistikHariIni.totaldaftarunitkerja }}
+            {{ statistikHariIni.totalpengguna }}
           </p>
         </div>
-        <UIcon name="i-heroicons-user-plus" class="w-8 h-8 text-blue-200" />
+        <UIcon name="i-heroicons-users" class="w-8 h-8 text-blue-200" />
       </div>
     </UCard>
 
     <UCard class="bg-linear-to-br from-amber-500 to-amber-600 text-white border-0">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-amber-100 text-sm">Total Daftar Unit Kerja Aktif</p>
+          <p class="text-amber-100 text-sm">Total User Aktif</p>
           <p class="text-3xl font-bold">
-            {{ statistikHariIni.totaldaftarunitkerjaaktif }}
+            {{ statistikHariIni.totaluseraktif }}
           </p>
         </div>
-        <UIcon name="i-heroicons-user-plus" class="w-8 h-8 text-amber-200" />
+        <UIcon name="i-heroicons-users" class="w-8 h-8 text-amber-200" />
       </div>
     </UCard>
 
     <UCard class="bg-linear-to-br from-green-500 to-green-600 text-white border-0">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-green-100 text-sm">Total Daftar Unit Kerja Tidak Aktif</p>
+          <p class="text-green-100 text-sm">Total User Tidak Aktif</p>
           <p class="text-3xl font-bold">
-            {{ statistikHariIni.totaldaftarunitkerjatidakaktif }}
+            {{ statistikHariIni.totalusertidakaktif }}
           </p>
         </div>
-        <UIcon name="i-heroicons-user-plus" class="w-8 h-8 text-green-200" />
+        <UIcon name="i-heroicons-users" class="w-8 h-8 text-green-200" />
       </div>
     </UCard>
   </div>
@@ -66,7 +66,7 @@
         <input
           v-model="search"
           type="text"
-          placeholder="Cari nama unit kerja..."
+          placeholder="Cari nama atau posisi..."
           class="w-full pl-10 pr-9 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm transition focus:ring-2 focus:ring-blue-500 hover:shadow-md"
         />
       </div>
@@ -90,12 +90,12 @@
             <th
               class="px-4 py-3 text-left text-sm font-semibold text-slate-800 dark:text-slate-400"
             >
-              Unit Kerja
+              Nama Pengguna
             </th>
             <th
               class="px-4 py-3 text-left text-sm font-semibold text-slate-800 dark:text-slate-400"
             >
-              Hak Akses
+              Posisi
             </th>
             <th
               class="px-4 py-3 text-left text-sm font-semibold text-slate-800 dark:text-slate-400"
@@ -118,10 +118,10 @@
             class="hover:bg-slate-50 dark:hover:bg-slate-700/50"
           >
             <td class="px-4 py-3 text-slate-700 dark:text-slate-300">
-              {{ member.unitkerja }}
+              {{ member.name }}
             </td>
             <td class="px-4 py-3 text-slate-700 dark:text-slate-300">
-              {{ member.hakakses }}
+              {{ member.role }}
             </td>
             <td class="px-4 py-3">
               <span
@@ -254,31 +254,26 @@
         <div class="space-y-4">
           <div>
             <label class="text-sm text-slate-600 dark:text-slate-400">
-              Nama Unit Kerja
+              Nama Pengguna
             </label>
-
-            <USelectMenu
-              v-model="form.unitkerja"
-              :items="namaUnitKerjaOptions"
-              value-key="value"
-              option-attribute="label"
-              searchable
-              placeholder="Pilih Nama Unit Kerja"
-              class="w-full"
-              size="lg"
+            <input
+              v-model="form.name"
+              type="text"
+              placeholder="Masukkan nama"
+              class="mt-1 w-full px-3 py-2 border rounded-lg bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-sm focus:ring-2 focus:ring-emerald-500"
             />
           </div>
 
           <div>
-            <label class="text-sm text-slate-600 dark:text-slate-400"> Hak Akses </label>
+            <label class="text-sm text-slate-600 dark:text-slate-400"> Posisi </label>
 
             <USelectMenu
-              v-model="form.hakakses"
-              :items="hakAksesOptions"
+              v-model="form.role"
+              :items="roleOptions"
               value-key="value"
               option-attribute="label"
               searchable
-              placeholder="Pilih Hak Akses"
+              placeholder="Pilih Posisi"
               class="w-full"
               size="lg"
             />
@@ -346,8 +341,9 @@
 </template>
 <script setup lang="ts">
 useHead({
-  title: "Admin Daftar Poli",
+  title: "Admin Login Page",
 });
+import { toastSuccess, toastError, toastWarning } from "~/utils/toast";
 import { reactive, ref, computed, watch } from "vue";
 import Swal from "sweetalert2";
 const showModal = ref(false);
@@ -355,85 +351,66 @@ const isEdit = ref(false);
 const editIndex = ref<number | null>(null);
 
 const form = reactive({
-  unitkerja: "",
-  hakakses: "",
+  name: "",
+  role: "",
   status: "aktif",
   dataTableuser: [
-    {
-      unitkerja: "Instalasi Teknologi Komunikasi dan Informasi",
-      hakakses: "Superuser",
-      status: "aktif",
-    },
-    {
-      unitkerja: "Bidang Penelitian dan Pengembangan",
-      hakakses: "SuperAdmin",
-      status: "tidak_aktif",
-    },
-    {
-      unitkerja: "Instalasi Teknologi Komunikasi dan Informasi 	",
-      hakakses: "SuperAdmin",
-      status: "aktif",
-    },
-    {
-      unitkerja: "Bidang Penelitian dan Pengembangan",
-      hakakses: "SuperAdmin",
-      status: "aktif",
-    },
-    {
-      unitkerja: "Instalasi Teknologi Komunikasi dan Informasi 	",
-      hakakses: "SuperAdmin",
-      status: "tidak_aktif",
-    },
-    {
-      unitkerja: "Bidang Penelitian dan Pengembangan",
-      hakakses: "Superuser",
-      status: "aktif",
-    },
+    { name: "Admin", role: "Administrator", status: "aktif" },
+    { name: "Budi", role: "Operator", status: "aktif" },
+    { name: "Sinta", role: "Manager", status: "tidak_aktif" },
+    { name: "Joko", role: "Staff", status: "aktif" },
   ],
 });
 
-const hakAkses = ["Superuser", "SuperAdmin"];
+const roles = ["Admin", "User", "Manager"];
 
-const hakAksesOptions = hakAkses.map((hakakses) => ({
-  label: hakakses,
-  value: hakakses,
-}));
-const namaUnitKerja = [
-  "Instalasi Teknologi Komunikasi dan Informasi",
-  "Bidang Penelitian dan Pengembangan",
-  "Instalasi Teknologi Komunikasi dan Informasi 	",
-  "Bidang Penelitian dan Pengembangan",
-  "Instalasi Teknologi Komunikasi dan Informasi 	",
-  "Bidang Penelitian dan Pengembangan",
-];
-
-const namaUnitKerjaOptions = namaUnitKerja.map((unitkerja) => ({
-  label: unitkerja,
-  value: unitkerja,
+const roleOptions = roles.map((role) => ({
+  label: role,
+  value: role,
 }));
 
 /* =====================
    CREATE / UPDATE USER
 ===================== */
 
-function saveUser() {
-  if (!form.hakakses || !form.unitkerja) return;
-
-  if (isEdit.value && editIndex.value !== null) {
-    form.dataTableuser[editIndex.value] = {
-      unitkerja: form.unitkerja,
-      hakakses: form.hakakses,
-      status: form.status,
-    };
-  } else {
-    form.dataTableuser.push({
-      unitkerja: form.unitkerja,
-      hakakses: form.hakakses,
-      status: form.status,
-    });
+async function saveUser() {
+  // ✅ VALIDASI
+  if (!form.name || !form.role) {
+    toastWarning("Nama dan role wajib diisi");
+    return;
   }
 
-  resetForm();
+  try {
+    let message = "";
+
+    if (isEdit.value && editIndex.value !== null) {
+      // ✏️ UPDATE
+      form.dataTableuser[editIndex.value] = {
+        name: form.name,
+        role: form.role,
+        status: form.status,
+      };
+
+      message = "Data berhasil diupdate";
+    } else {
+      // ➕ CREATE
+      form.dataTableuser.push({
+        name: form.name,
+        role: form.role,
+        status: form.status,
+      });
+
+      message = "Data berhasil disimpan";
+    }
+
+    // ✅ SUCCESS TOAST
+    toastSuccess(message);
+
+    resetForm();
+  } catch (err) {
+    // ❌ ERROR TOAST
+    toastError("Terjadi kesalahan saat menyimpan data");
+  }
 }
 
 const search = ref("");
@@ -446,16 +423,13 @@ const filteredUsers = computed(() => {
   if (!search.value) return form.dataTableuser;
 
   return form.dataTableuser.filter((user) =>
-    [user.unitkerja, user.hakakses]
-      .join(" ")
-      .toLowerCase()
-      .includes(search.value.toLowerCase())
+    [user.name, user.role].join(" ").toLowerCase().includes(search.value.toLowerCase())
   );
 });
 
 function resetForm() {
-  form.unitkerja = "";
-  form.hakakses = "";
+  form.name = "";
+  form.role = "";
   showModal.value = false;
   isEdit.value = false;
   editIndex.value = null;
@@ -464,9 +438,8 @@ function resetForm() {
 function closeModal() {
   showModal.value = false;
 
-  form.unitkerja = "";
-  form.hakakses = "";
-  form.status = "aktif";
+  form.name = "";
+  form.role = "";
 
   isEdit.value = false;
   editIndex.value = null;
@@ -481,8 +454,8 @@ function editUser(index: number) {
 
   if (!user) return;
 
-  form.unitkerja = user.unitkerja;
-  form.hakakses = user.hakakses;
+  form.name = user.name;
+  form.role = user.role;
   form.status = user.status;
 
   editIndex.value = index;
@@ -494,13 +467,13 @@ function editUser(index: number) {
    DELETE USER
 ===================== */
 
-function deleteUser(index: number) {
-  Swal.fire({
+async function deleteUser(index: number) {
+  const result = await Swal.fire({
     title: "Hapus User?",
     text: "Data akan dihapus secara permanen",
     icon: "warning",
-    width: 380,
-    padding: "1.5rem",
+    width: 360,
+    padding: "1rem",
     showCancelButton: true,
     confirmButtonText: "Hapus",
     cancelButtonText: "Batal",
@@ -508,25 +481,24 @@ function deleteUser(index: number) {
     cancelButtonColor: "#94a3b8",
     reverseButtons: true,
     customClass: {
-      popup: "rounded-xl",
-      title: "text-lg font-semibold",
-      confirmButton: "px-4 py-2 rounded-lg text-sm",
-      cancelButton: "px-4 py-2 rounded-lg text-sm",
+      popup: "rounded-xl p-4",
+      title: "!text-sm !font-semibold",
+      htmlContainer: "!text-xs !text-gray-500",
+      confirmButton: "!text-xs px-3 py-1.5 rounded-lg",
+      cancelButton: "!text-xs px-3 py-1.5 rounded-lg",
     },
-  }).then((result) => {
-    if (result.isConfirmed) {
-      form.dataTableuser.splice(index, 1);
-
-      Swal.fire({
-        icon: "success",
-        title: "User dihapus",
-        text: "Data berhasil dihapus",
-        width: 350,
-        timer: 1200,
-        showConfirmButton: false,
-      });
-    }
   });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    form.dataTableuser.splice(index, 1);
+
+    // ✅ pakai toast (bukan popup lagi)
+    toastSuccess("User berhasil dihapus");
+  } catch (err) {
+    toastError("Gagal menghapus user");
+  }
 }
 
 /* =====================
@@ -573,9 +545,9 @@ const statistikHariIni = computed(() => {
     .length;
 
   return {
-    totaldaftarunitkerja: total,
-    totaldaftarunitkerjaaktif: aktif,
-    totaldaftarunitkerjatidakaktif: tidakAktif,
+    totalpengguna: total,
+    totaluseraktif: aktif,
+    totalusertidakaktif: tidakAktif,
   };
 });
 </script>
