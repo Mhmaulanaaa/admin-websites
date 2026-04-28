@@ -5,13 +5,13 @@ import { confirmAction, successAlert, errorAlert } from "~/utils/swal";
 import BaseStatCard from "~/components/form/BaseStatCard.vue";
 import BaseSearch from "~/components/form/BaseSearch.vue";
 import BaseTable from "~/components/form/BaseTable.vue";
-import BaseModalSubMenu from "~/components/base/master/BaseModalSubMenu.vue";
+import BaseModalMenu from "~/components/base/master/BaseModalMenu.vue";
 
 useHead({
-  title: "Admin Master Submenu",
+  title: "Admin Master Menu",
 });
 definePageMeta({
-  breadcrumb: [{ label: "Master", to: "/master" }, { label: "Master Submenu" }],
+  breadcrumb: [{ label: "Master", to: "/master" }, { label: "Master Menu" }],
 });
 
 /* =====================
@@ -79,6 +79,7 @@ const filterStatusOptions = [
   { value: "aktif", label: "Aktif" },
   { value: "tidak_aktif", label: "Tidak Aktif" },
 ];
+
 
 /* =====================
    SEARCH
@@ -150,7 +151,7 @@ interface Menu {
 // TABLE
 const columns = [
   { accessorKey: "no", header: "No" },
-  { accessorKey: "nama_menu", header: "Nama Submenu" },
+  { accessorKey: "nama_menu", header: "Nama Menu" },
   { accessorKey: "pathurl", header: "Path URL" },
   { accessorKey: "kategori", header: "Kategori" },
   { accessorKey: "status", header: "Status Aktivasi" },
@@ -167,7 +168,7 @@ const columns = [
   </div>
   <div class="grid grid-cols-3 gap-4 mb-6">
     <BaseStatCard
-      title="Total Submenu"
+      title="Total Menu"
       :value="statistik.total"
       color="from-blue-500 to-blue-600"
       iconColor="text-blue-200"
@@ -175,7 +176,7 @@ const columns = [
     />
 
     <BaseStatCard
-      title="Total Submenu Aktif"
+      title="Total Menu Aktif"
       :value="statistik.aktif"
       color="from-green-500 to-green-600"
       iconColor="text-white-200"
@@ -183,7 +184,7 @@ const columns = [
     />
 
     <BaseStatCard
-      title="Total Submenu Tidak Aktif"
+      title="Total Menu Tidak Aktif"
       :value="statistik.tidak"
       color="from-red-500 to-red-600"
       iconColor="text-white-200"
@@ -199,7 +200,7 @@ const columns = [
       <!-- SEARCH -->
       <div class="w-full group flex items-center sm:w-full group gap-5">
         <div class="flex-1">
-          <BaseSearch v-model="cariData" placeholder="Cari Submenu... " />
+          <BaseSearch v-model="cariData" placeholder="Cari Menu... " />
         </div>
         <div class="flex-1">
           <USelectMenu
@@ -333,7 +334,7 @@ const columns = [
     </BaseTable>
     <!-- End Table -->
     <div>
-      <BaseModalSubMenu
+      <BaseModalMenu
         size="lg"
         :model-value="showModal"
         @update:modelValue="showModal = $event"

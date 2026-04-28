@@ -5,13 +5,13 @@ import { confirmAction, successAlert, errorAlert } from "~/utils/swal";
 import BaseStatCard from "~/components/form/BaseStatCard.vue";
 import BaseSearch from "~/components/form/BaseSearch.vue";
 import BaseTable from "~/components/form/BaseTable.vue";
-import BaseModalSubMenu from "~/components/base/master/BaseModalSubMenu.vue";
+import BaseModalHakAkses from "~/components/base/master/BaseModalHakAkses.vue";
 
 useHead({
-  title: "Admin Master Submenu",
+  title: "Admin Master Hak Akses",
 });
 definePageMeta({
-  breadcrumb: [{ label: "Master", to: "/master" }, { label: "Master Submenu" }],
+  breadcrumb: [{ label: "Master", to: "/master" }, { label: "Master Hak Akses" }],
 });
 
 /* =====================
@@ -22,8 +22,8 @@ const isEdit = ref(false);
 const editIndex = ref<number | null>(null);
 
 const dataTable = ref([
-  { name: "Website", pathurl: "/", kategori: "Website", status: "aktif" },
-  { name: "Admin", pathurl: "/", kategori: "Admin", status: "tidak_aktif" },
+  { nama_hakakses: "Superuser", status: "aktif" },
+  { nama_hakakses: "Bidang", status: "tidak_aktif" },
 ]);
 
 /* =====================
@@ -68,46 +68,57 @@ async function deleteUser(index: number) {
 }
 
 /* =====================
-   SELECT2
+   SELECT2 FILTER
 ===================== */
-const kategoriOptions = [
-  { value: "Website", label: "Website" },
-  { value: "Admin", label: "Admin" },
-];
+
+const searchSelectHakAkses = ref("");
 
 const filterStatusOptions = [
   { value: "aktif", label: "Aktif" },
   { value: "tidak_aktif", label: "Tidak Aktif" },
 ];
 
+const hakAksesOptions = computed(() => {
+  const unique = new Map();
+
+  dataTable.value.forEach((item) => {
+    unique.set(item.nama_hakakses, {
+      label: item.nama_hakakses,
+      value: item.nama_hakakses,
+    });
+  });
+
+  return Array.from(unique.values());
+});
+
 /* =====================
    SEARCH
 ===================== */
 const cariData = ref("");
-const kategoriFilter = ref<{ label: string; value: string } | undefined>(undefined);
 const statusFilter = ref<{ label: string; value: string } | undefined>(undefined);
+const statusHakAkses = ref<{ label: string; value: string } | undefined>(undefined);
 const appliedFilter = ref({
   search: "",
-  kategori: undefined as string | undefined,
+  hakakses: undefined as string | undefined,
   status: undefined as string | undefined,
 });
 
 function handleSearch() {
   appliedFilter.value = {
     search: cariData.value,
-    kategori: kategoriFilter.value?.value,
+    hakakses: statusHakAkses.value?.value,
     status: statusFilter.value?.value,
   };
 }
 
 function handleReset() {
   cariData.value = "";
-  kategoriFilter.value = undefined;
+  statusHakAkses.value = undefined;
   statusFilter.value = undefined;
 
   appliedFilter.value = {
     search: "",
-    kategori: undefined,
+    hakakses: undefined,
     status: undefined,
   };
 }
@@ -116,18 +127,18 @@ const filteredData = computed(() => {
   return dataTable.value.filter((item) => {
     const matchSearch =
       !appliedFilter.value.search ||
-      [item.name, item.pathurl]
+      [item.nama_hakakses]
         .join(" ")
         .toLowerCase()
         .includes(appliedFilter.value.search.toLowerCase());
 
-    const matchKategori =
-      !appliedFilter.value.kategori || item.kategori === appliedFilter.value.kategori;
-
     const matchStatus =
-      !appliedFilter.value.status || item.status === appliedFilter.value.status;
+      !statusFilter.value?.value || item.status === statusFilter.value.value;
 
-    return matchSearch && matchKategori && matchStatus;
+    const matchHakAkses =
+      !statusHakAkses.value?.value || item.nama_hakakses === statusHakAkses.value.value;
+
+    return matchSearch && matchStatus && matchHakAkses;
   });
 });
 
@@ -142,17 +153,13 @@ const statistik = computed(() => ({
 
 // Interface untuk tipe data menu
 interface Menu {
-  name: string;
-  pathurl: string;
-  kategori: string;
+  nama_hakakses: string;
   status: string;
 }
 // TABLE
 const columns = [
   { accessorKey: "no", header: "No" },
-  { accessorKey: "nama_menu", header: "Nama Submenu" },
-  { accessorKey: "pathurl", header: "Path URL" },
-  { accessorKey: "kategori", header: "Kategori" },
+  { accessorKey: "nama_hakakses", header: "Nama Hak Akses" },
   { accessorKey: "status", header: "Status Aktivasi" },
   { accessorKey: "actions", header: "Aksi" },
 ];
@@ -161,13 +168,13 @@ const columns = [
   <!-- Start Section -->
   <div class="mb-4">
     <h1 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">
-      Master Submenu
+      Master Hak Akses
     </h1>
     <AppBreadcrumb />
   </div>
   <div class="grid grid-cols-3 gap-4 mb-6">
     <BaseStatCard
-      title="Total Submenu"
+      title="Total Hak Akses"
       :value="statistik.total"
       color="from-blue-500 to-blue-600"
       iconColor="text-blue-200"
@@ -175,7 +182,7 @@ const columns = [
     />
 
     <BaseStatCard
-      title="Total Submenu Aktif"
+      title="Total Hak Akses Aktif"
       :value="statistik.aktif"
       color="from-green-500 to-green-600"
       iconColor="text-white-200"
@@ -183,7 +190,7 @@ const columns = [
     />
 
     <BaseStatCard
-      title="Total Submenu Tidak Aktif"
+      title="Total Hak Akses Tidak Aktif"
       :value="statistik.tidak"
       color="from-red-500 to-red-600"
       iconColor="text-white-200"
@@ -199,14 +206,12 @@ const columns = [
       <!-- SEARCH -->
       <div class="w-full group flex items-center sm:w-full group gap-5">
         <div class="flex-1">
-          <BaseSearch v-model="cariData" placeholder="Cari Submenu... " />
-        </div>
-        <div class="flex-1">
+          <!-- <BaseSearch v-model="cariData" placeholder="Cari Hak Akses... " /> -->
           <USelectMenu
-            label="Pilih Kategori"
-            placeholder="Pilih Kategori"
-            v-model="kategoriFilter"
-            :items="kategoriOptions"
+            label="Pilih Nama Hak Akses"
+            placeholder="Pilih Nama Hak Akses"
+            v-model="statusHakAkses"
+            :items="hakAksesOptions"
             class="w-full px-3 py-3 rounded-xl text-sm bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 transition-all duration-200"
           />
         </div>
@@ -256,12 +261,7 @@ const columns = [
       </button>
     </div>
     <!-- TABLE -->
-    <BaseTable
-      ref="tableRef"
-      :data="filteredData"
-      :columns="columns"
-      max-height="calc(100vh - 350px)"
-    >
+    <BaseTable ref="tableRef" :data="filteredData" :columns="columns">
       <!-- NO -->
       <template #no-cell="{ row }">
         <span class="text-xs text-center">
@@ -270,30 +270,9 @@ const columns = [
       </template>
 
       <!-- NAMA MENU -->
-      <template #nama_menu-cell="{ row }">
+      <template #nama_hakakses-cell="{ row }">
         <span class="text-xs font-medium text-gray-700 dark:text-slate-200">
-          {{ (row.original as Menu).name }}
-        </span>
-      </template>
-
-      <!-- PATH URL -->
-      <template #pathurl-cell="{ row }">
-        <span class="text-xs">
-          {{ (row.original as Menu).pathurl }}
-        </span>
-      </template>
-
-      <!-- KATEGORI -->
-      <template #kategori-cell="{ row }">
-        <span
-          :class="[
-            'px-2.5 py-1 text-xs font-medium rounded-full',
-            (row.original as Menu).kategori === 'Website'
-              ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30'
-              : 'bg-rose-100 text-rose-700 dark:bg-rose-900/30',
-          ]"
-        >
-          {{ (row.original as Menu).kategori }}
+          {{ (row.original as Menu).nama_hakakses }}
         </span>
       </template>
 
@@ -333,7 +312,7 @@ const columns = [
     </BaseTable>
     <!-- End Table -->
     <div>
-      <BaseModalSubMenu
+      <BaseModalHakAkses
         size="lg"
         :model-value="showModal"
         @update:modelValue="showModal = $event"

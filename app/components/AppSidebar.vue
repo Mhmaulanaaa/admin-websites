@@ -55,7 +55,7 @@ const menus: Menu[] = [
       {
         name: "Master Hak Akses",
         icon: "heroicons:chevron-right",
-        to: "/master-role",
+        to: "/master/masterhakakses",
       },
       {
         name: "Master Menu",
@@ -70,17 +70,17 @@ const menus: Menu[] = [
       {
         name: "Master Pengguna",
         icon: "heroicons:chevron-right",
-        to: "/master-pengguna",
+        to: "/master/masterpengguna",
       },
       {
         name: "Master Ruang Rawat Inap",
         icon: "heroicons:chevron-right",
-        to: "/master-role",
+        to: "/master/masterruangrawatinap",
       },
       {
         name: "Master SK TT",
         icon: "heroicons:chevron-right",
-        to: "/master-role",
+        to: "/master/mastersk",
       },
     ],
   },
