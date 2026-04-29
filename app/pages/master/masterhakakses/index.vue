@@ -206,7 +206,6 @@ const columns = [
       <!-- SEARCH -->
       <div class="w-full group flex items-center sm:w-full group gap-5">
         <div class="flex-1">
-          <!-- <BaseSearch v-model="cariData" placeholder="Cari Hak Akses... " /> -->
           <USelectMenu
             label="Pilih Nama Hak Akses"
             placeholder="Pilih Nama Hak Akses"

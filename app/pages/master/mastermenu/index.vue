@@ -80,7 +80,6 @@ const filterStatusOptions = [
   { value: "tidak_aktif", label: "Tidak Aktif" },
 ];
 
-
 /* =====================
    SEARCH
 ===================== */
@@ -161,9 +160,7 @@ const columns = [
 <template>
   <!-- Start Section -->
   <div class="mb-4">
-    <h1 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">
-      Master Submenu
-    </h1>
+    <h1 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">Master Menu</h1>
     <AppBreadcrumb />
   </div>
   <div class="grid grid-cols-3 gap-4 mb-6">
