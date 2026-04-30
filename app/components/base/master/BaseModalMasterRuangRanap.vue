@@ -20,10 +20,9 @@ const props = defineProps<{
   isEdit: boolean;
   size?: "sm" | "md" | "lg" | "xl";
   initialData?: {
-    kode_pengguna: string;
-    nama_pengguna: string;
+    kode_ruangan: string;
+    nama_ruangan: string;
     unit_kerja: string;
-    hak_akses: string;
     status: string;
   };
   nextNumber?: number;
@@ -32,10 +31,9 @@ const props = defineProps<{
 const emit = defineEmits(["update:modelValue", "save"]);
 
 const form = reactive({
-  kode_pengguna: "",
-  nama_pengguna: "",
+  kode_ruangan: "",
+  nama_ruangan: "",
   unit_kerja: "",
-  hak_akses: "",
   status: "aktif",
 });
 
@@ -50,19 +48,24 @@ function generateKode() {
   const tanggal = `${year}${month}${day}`;
   const urutan = String(props.nextNumber ?? 1).padStart(3, "0");
 
-  form.kode_pengguna = `USER${tanggal}${urutan}`;
+  form.kode_ruangan = `RU${tanggal}${urutan}`;
 }
 
-const namapenggunaOptions = [
+const namaRuanganOptions = [
   {
     value: "1",
-    label: "John Doe",
-    unit_kerja: "Instalasi Teknologi Komunikasi dan Informasi",
+    label: "Ruangan 1",
+    unit_kerja: "Unit Kerja 1",
   },
   {
     value: "2",
-    label: "Jane Smith",
-    unit_kerja: "Instalasi Teknologi Komunikasi dan Informasi",
+    label: "Ruangan 2",
+    unit_kerja: "Unit Kerja 2",
+  },
+  {
+    value: "3",
+    label: "Ruangan 3",
+    unit_kerja: "Unit Kerja 3",
   },
 ];
 
@@ -74,21 +77,19 @@ watch(
     if (props.isEdit && props.initialData) {
       const initialData = props.initialData;
 
-      form.kode_pengguna = initialData.kode_pengguna;
+      form.kode_ruangan = initialData.kode_ruangan;
 
-      const selected = namapenggunaOptions.find(
-        (i) => i.label === initialData.nama_pengguna
+      const selected = namaRuanganOptions.find(
+        (i) => i.label === initialData.nama_ruangan
       );
 
-      form.nama_pengguna = selected?.value || "";
+      form.nama_ruangan = selected?.value || "";
       form.unit_kerja = initialData.unit_kerja;
-      form.hak_akses = initialData.hak_akses;
       form.status = initialData.status;
     } else {
       generateKode();
-      form.nama_pengguna = "";
+      form.nama_ruangan = "";
       form.unit_kerja = "";
-      form.hak_akses = "";
       form.status = "aktif";
     }
   },
@@ -96,9 +97,9 @@ watch(
 );
 
 watch(
-  () => form.nama_pengguna,
+  () => form.nama_ruangan,
   (val) => {
-    const selected = namapenggunaOptions.find((i) => i.value === val);
+    const selected = namaRuanganOptions.find((i) => i.value === val);
 
     if (selected) {
       form.unit_kerja = selected.unit_kerja;
@@ -111,23 +112,17 @@ function close() {
 }
 
 function submit() {
-  const selected = namapenggunaOptions.find((i) => i.value === form.nama_pengguna);
+  const selected = namaRuanganOptions.find((i) => i.value === form.nama_ruangan);
 
   emit("save", {
     ...form,
-    nama_pengguna_id: form.nama_pengguna, // ID
-    nama_pengguna: selected?.label || "", // LABEL
+    nama_ruangan_id: form.nama_ruangan, // ID
+    nama_ruangan: selected?.label || "", // LABEL
     unit_kerja: selected?.unit_kerja || "",
   });
 
   close();
 }
-
-const hakaksesOptions = [
-  { value: "Admin", label: "Admin" },
-  { value: "User", label: "User" },
-  { value: "Staff", label: "Staff" },
-];
 
 const statusOptions = [
   { value: "aktif", label: "Aktif" },
@@ -165,10 +160,14 @@ const statusOptions = [
 
             <div>
               <h2 class="text-sm font-semibold text-slate-800 dark:text-white">
-                {{ isEdit ? "Edit Pengguna" : "Tambah Pengguna" }}
+                {{ isEdit ? "Edit Ruang Rawat Inap" : "Tambah Ruang Rawat Inap" }}
               </h2>
               <p class="text-xs text-slate-500">
-                {{ isEdit ? "Perbarui data pengguna" : "Tambahkan pengguna baru" }}
+                {{
+                  isEdit
+                    ? "Perbarui data ruang rawat inap"
+                    : "Tambahkan ruang rawat inap baru"
+                }}
               </p>
             </div>
           </div>
@@ -184,39 +183,23 @@ const statusOptions = [
 
         <div class="p-6 m-1 gap-2">
           <div v-if="isEdit">
-            <label class="text-sm">Kode Pengguna</label>
-            <BaseInput
-              v-model="form.kode_pengguna"
-              placeholder="Kode Pengguna"
-              disabled
-            />
+            <label class="text-sm">Kode Ruangan</label>
+            <BaseInput v-model="form.kode_ruangan" placeholder="Kode Ruangan" disabled />
           </div>
           <div>
-            <label class="text-sm">Nama Pengguna</label>
+            <label class="text-sm">Nama Master Ruang Rawat Inap</label>
             <USelectMenu
-              v-model="form.nama_pengguna"
-              :items="namapenggunaOptions"
-              :disabled="isEdit"
+              v-model="form.nama_ruangan"
+              :items="namaRuanganOptions"
               value-key="value"
               label-key="label"
-              placeholder="Pilih Nama Pengguna"
+              placeholder="Pilih Nama Master Ruang Rawat Inap"
               class="w-48 w-full px-3 py-3 rounded-xl text-sm bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 transition-all duration-200"
             />
           </div>
           <div>
             <label class="text-sm">Unit Kerja</label>
-            <BaseInput v-model="form.unit_kerja" placeholder="Unit Kerja" disabled />
-          </div>
-          <div>
-            <label class="text-sm">Hak Akses</label>
-            <USelectMenu
-              v-model="form.hak_akses"
-              :items="hakaksesOptions"
-              value-key="value"
-              label-key="label"
-              placeholder="Pilih Hak Akses"
-              class="w-48 w-full px-3 py-3 rounded-xl text-sm bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 transition-all duration-200"
-            />
+            <BaseInput v-model="form.unit_kerja" placeholder="Unit Kerja" />
           </div>
           <div v-if="isEdit">
             <label class="text-sm">Status</label>

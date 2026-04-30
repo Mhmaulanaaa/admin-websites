@@ -8,6 +8,12 @@ import {
   useDark,
   useToggle,
 } from "@vueuse/core";
+import { toast } from "vue-sonner";
+
+const handleLogout = () => {
+  toast.success("Berhasil logout");
+  navigateTo("/login");
+};
 
 const route = useRoute();
 
@@ -267,6 +273,7 @@ function toggleSidebar() {
         'w-80',
         isMobileOpen ? 'translate-x-0' : '-translate-x-full',
       ]"
+      @logout="handleLogout"
     >
       <!-- Header dengan Gradient -->
       <div
@@ -467,6 +474,7 @@ function toggleSidebar() {
               'p-2 rounded-xl text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300',
               isCollapsed ? 'lg:hidden' : '',
             ]"
+            @click="handleLogout"
           >
             <UIcon name="heroicons:arrow-right-on-rectangle" class="w-5 h-5" />
           </button>

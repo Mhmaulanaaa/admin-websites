@@ -4,7 +4,7 @@ definePageMeta({
 });
 
 useHead({
-  title: "Dashboard Admin",
+  title: "Admin Beranda",
 });
 
 const colorMode = useColorMode();
