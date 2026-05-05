@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { reactive, watch, computed } from "vue";
 import BaseInput from "~/components/form/BaseInput.vue";
+import BaseDropZone from "~/components/form/BaseDropZone.vue";
 
 const modalSize = computed(() => {
   switch (props.size) {
@@ -16,34 +17,69 @@ const modalSize = computed(() => {
 });
 
 const props = defineProps<{
+  file: File | string | null;
   modelValue: boolean;
   isEdit: boolean;
   size?: "sm" | "md" | "lg" | "xl";
   initialData?: {
-    nama_hakakses: string;
+    kode_mastersk: string;
+    nama_mastersk: string;
+    file?: string;
     status: string;
   };
+  nextNumber?: number;
 }>();
 
 const emit = defineEmits(["update:modelValue", "save"]);
 
 const form = reactive({
-  nama_hakakses: "",
+  kode_mastersk: "",
+  nama_mastersk: "",
+  file: "" as string,
   status: "aktif",
 });
 
-// sync data saat edit
+function handleUpload(file: File | null) {
+  if (!file) {
+    form.file = "";
+    return;
+  }
+
+  // sementara (frontend only)
+  form.file = URL.createObjectURL(file);
+}
+
+function generateKode() {
+  //   console.log("nextNumber:", props.nextNumber);
+  const now = new Date();
+
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+
+  const tanggal = `${year}${month}${day}`;
+  const urutan = String(props.nextNumber ?? 1).padStart(3, "0");
+
+  form.kode_mastersk = `MSKTT${tanggal}${urutan}`;
+}
+
 watch(
   () => props.modelValue,
   (val) => {
     if (!val) return;
 
     if (props.isEdit && props.initialData) {
-      const val = props.initialData;
-      form.nama_hakakses = val.nama_hakakses;
-      form.status = val.status;
+      const initialData = props.initialData;
+
+      form.kode_mastersk = initialData.kode_mastersk;
+
+      form.nama_mastersk = initialData.nama_mastersk;
+      form.file = initialData.file ?? "";
+      form.status = initialData.status;
     } else {
-      form.nama_hakakses = "";
+      generateKode();
+      form.nama_mastersk = "";
+      form.file = "";
       form.status = "aktif";
     }
   },
@@ -55,9 +91,11 @@ function close() {
 }
 
 function submit() {
-  if (!form.nama_hakakses) return;
+  emit("save", {
+    ...form,
+    nama_mastersk_id: form.nama_mastersk, // ID
+  });
 
-  emit("save", { ...form });
   close();
 }
 
@@ -97,10 +135,10 @@ const statusOptions = [
 
             <div>
               <h2 class="text-sm font-semibold text-slate-800 dark:text-white">
-                {{ isEdit ? "Edit Hak Akses" : "Tambah Hak Akses" }}
+                {{ isEdit ? "Edit Master SKTT" : "Tambah Master SKTT" }}
               </h2>
               <p class="text-xs text-slate-500">
-                {{ isEdit ? "Perbarui data hak akses" : "Tambahkan hak akses baru" }}
+                {{ isEdit ? "Perbarui data master sktt" : "Tambahkan master sktt baru" }}
               </p>
             </div>
           </div>
@@ -115,9 +153,21 @@ const statusOptions = [
         </div>
 
         <div class="p-6 m-1 gap-2">
+          <div v-if="isEdit">
+            <label class="text-sm">Kode Master SKTT</label>
+            <BaseInput
+              v-model="form.kode_mastersk"
+              placeholder="Kode Master SKTT"
+              disabled
+            />
+          </div>
           <div>
-            <label class="text-sm">Hak Akses</label>
-            <BaseInput v-model="form.nama_hakakses" placeholder="Hak Akses" />
+            <label class="text-sm">Nama Master SKTT</label>
+            <BaseInput v-model="form.nama_mastersk" placeholder="Nama Master SKTT" />
+          </div>
+          <div>
+            <label class="text-sm">File</label>
+            <BaseDropZone :file="form.file" @update:file="handleUpload" />
           </div>
           <div v-if="isEdit">
             <label class="text-sm">Status</label>

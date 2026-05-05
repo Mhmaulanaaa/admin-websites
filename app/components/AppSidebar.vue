@@ -9,8 +9,12 @@ import {
   useToggle,
 } from "@vueuse/core";
 import { toast } from "vue-sonner";
+import { confirmLogout } from "~/utils/swal";
 
-const handleLogout = () => {
+const handleLogout = async () => {
+  const result = await confirmLogout();
+
+  if (!result.isConfirmed) return;
   toast.success("Berhasil logout");
   navigateTo("/login");
 };

@@ -38,9 +38,11 @@ const form = reactive({
 
 // sync data saat edit
 watch(
-  () => props.initialData,
+  () => props.modelValue,
   (val) => {
-    if (val) {
+    if (!val) return;
+    if (props.isEdit && props.initialData) {
+      const val = props.initialData;
       form.name = val.name;
       form.pathurl = val.pathurl;
       form.kategori = val.kategori;
