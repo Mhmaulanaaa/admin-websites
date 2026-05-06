@@ -3,15 +3,14 @@ import { ref, reactive, computed } from "vue";
 import { toastSuccess, toastError, toastWarning } from "~/utils/toast";
 import { confirmAction, successAlert, errorAlert } from "~/utils/swal";
 import BaseStatCard from "~/components/form/BaseStatCard.vue";
-import BaseSearch from "~/components/form/BaseSearch.vue";
 import BaseTable from "~/components/form/BaseTable.vue";
-import BaseModalMasterSubMenu from "~/components/base/master/BaseModalMasterSubMenu.vue";
+import BaseModalTransaksiEdukasiKesehatan from "~/components/base/transaksi/BaseModalTransaksiEdukasiKesehatan.vue";
 
 useHead({
-  title: "Admin Master Submenu",
+  title: "Admin Transaksi Edukasi Kesehatan",
 });
 definePageMeta({
-  breadcrumb: [{ label: "Master", to: "/master" }, { label: "Master Submenu" }],
+  breadcrumb: [{ label: "Transaksi", to: "/transaksi" }, { label: "Edukasi Kesehatan" }],
 });
 
 /* =====================
@@ -22,8 +21,21 @@ const isEdit = ref(false);
 const editIndex = ref<number | null>(null);
 
 const dataTable = ref([
-  { name: "Website", pathurl: "/", kategori: "Website", status: "aktif" },
-  { name: "Admin", pathurl: "/", kategori: "Admin", status: "tidak_aktif" },
+  {
+    kode_edukasikesehatan: "EDK20260429001",
+    nama_edukasikesehatan: "Edukasi Kesehatan tentang Pencegahan Diabetes Melitus",
+    deskripsi: "Ini adalah deskripsi",
+    file: "",
+    status: "aktif",
+  },
+  {
+    kode_edukasikesehatan: "EDK20260429002",
+    nama_edukasikesehatan:
+      "Edukasi Kesehatan tentang Manfaat Olahraga untuk Kesehatan Jantung",
+    deskripsi: "Ini adalah deskripsi",
+    file: "",
+    status: "tidak_aktif",
+  },
 ]);
 
 /* =====================
@@ -70,10 +82,6 @@ async function deleteUser(index: number) {
 /* =====================
    SELECT2
 ===================== */
-const kategoriOptions = [
-  { value: "Website", label: "Website" },
-  { value: "Admin", label: "Admin" },
-];
 
 const filterStatusOptions = [
   { value: "aktif", label: "Aktif" },
@@ -84,51 +92,56 @@ const filterStatusOptions = [
    SEARCH
 ===================== */
 const cariData = ref("");
-const kategoriFilter = ref<{ label: string; value: string } | undefined>(undefined);
-const statusFilter = ref<{ label: string; value: string } | undefined>(undefined);
+const kodeFilter = ref<string | undefined>();
+const statusFilter = ref<string | undefined>();
 const appliedFilter = ref({
   search: "",
-  kategori: undefined as string | undefined,
+  kode: undefined as string | undefined,
   status: undefined as string | undefined,
 });
+
+const kodeOptions = computed(() =>
+  dataTable.value.map((i) => ({
+    label: `${i.kode_edukasikesehatan} - ${i.nama_edukasikesehatan}`,
+    value: i.kode_edukasikesehatan,
+  }))
+);
 
 function handleSearch() {
   appliedFilter.value = {
     search: cariData.value,
-    kategori: kategoriFilter.value?.value,
-    status: statusFilter.value?.value,
+    kode: kodeFilter.value,
+    status: statusFilter.value,
   };
 }
 
 function handleReset() {
   cariData.value = "";
-  kategoriFilter.value = undefined;
+  kodeFilter.value = undefined;
   statusFilter.value = undefined;
 
   appliedFilter.value = {
     search: "",
-    kategori: undefined,
+    kode: undefined,
     status: undefined,
   };
 }
 
 const filteredData = computed(() => {
   return dataTable.value.filter((item) => {
-    const matchSearch =
-      !appliedFilter.value.search ||
-      [item.name, item.pathurl]
-        .join(" ")
-        .toLowerCase()
-        .includes(appliedFilter.value.search.toLowerCase());
-
-    const matchKategori =
-      !appliedFilter.value.kategori || item.kategori === appliedFilter.value.kategori;
+    const matchKode =
+      !appliedFilter.value.kode ||
+      item.kode_edukasikesehatan === appliedFilter.value.kode;
 
     const matchStatus =
       !appliedFilter.value.status || item.status === appliedFilter.value.status;
 
-    return matchSearch && matchKategori && matchStatus;
+    return matchKode && matchStatus;
   });
+});
+
+const nextNumber = computed(() => {
+  return dataTable.value.length + 1;
 });
 
 /* =====================
@@ -142,17 +155,19 @@ const statistik = computed(() => ({
 
 // Interface untuk tipe data menu
 interface Menu {
-  name: string;
-  pathurl: string;
-  kategori: string;
+  kode_edukasikesehatan: string;
+  nama_edukasikesehatan: string;
+  deskripsi: string;
+  file: string;
   status: string;
 }
 // TABLE
 const columns = [
   { accessorKey: "no", header: "No" },
-  { accessorKey: "nama_menu", header: "Nama Submenu" },
-  { accessorKey: "pathurl", header: "Path URL" },
-  { accessorKey: "kategori", header: "Kategori" },
+  { accessorKey: "kode_edukasikesehatan", header: "Kode Edukasi Kesehatan" },
+  { accessorKey: "nama_edukasikesehatan", header: "Nama Edukasi Kesehatan" },
+  { accessorKey: "deskripsi", header: "Deskripsi" },
+  // { accessorKey: "file", header: "File" },
   { accessorKey: "status", header: "Status Aktivasi" },
   { accessorKey: "actions", header: "Aksi" },
 ];
@@ -161,13 +176,13 @@ const columns = [
   <!-- Start Section -->
   <div class="mb-4">
     <h1 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">
-      Master Submenu
+      Transaksi Edukasi Kesehatan
     </h1>
     <AppBreadcrumb />
   </div>
   <div class="grid grid-cols-3 gap-4 mb-6">
     <BaseStatCard
-      title="Total Submenu"
+      title="Total Edukasi Kesehatan"
       :value="statistik.total"
       color="from-blue-500 to-blue-600"
       iconColor="text-blue-200"
@@ -175,7 +190,7 @@ const columns = [
     />
 
     <BaseStatCard
-      title="Total Submenu Aktif"
+      title="Total Edukasi Kesehatan Aktif"
       :value="statistik.aktif"
       color="from-green-500 to-green-600"
       iconColor="text-white-200"
@@ -183,7 +198,7 @@ const columns = [
     />
 
     <BaseStatCard
-      title="Total Submenu Tidak Aktif"
+      title="Total Edukasi Kesehatan Tidak Aktif"
       :value="statistik.tidak"
       color="from-red-500 to-red-600"
       iconColor="text-white-200"
@@ -199,14 +214,13 @@ const columns = [
       <!-- SEARCH -->
       <div class="w-full group flex items-center sm:w-full group gap-5">
         <div class="flex-1">
-          <BaseSearch v-model="cariData" placeholder="Cari Submenu... " />
-        </div>
-        <div class="flex-1">
           <USelectMenu
-            label="Pilih Kategori"
-            placeholder="Pilih Kategori"
-            v-model="kategoriFilter"
-            :items="kategoriOptions"
+            label="Pilih Kode dan Nama Edukasi Kesehatan"
+            placeholder="Pilih Kode dan Nama Edukasi Kesehatan"
+            v-model="kodeFilter"
+            :items="kodeOptions"
+            value-key="value"
+            label-key="label"
             class="w-full px-3 py-3 rounded-xl text-sm bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 transition-all duration-200"
           />
         </div>
@@ -216,6 +230,8 @@ const columns = [
             placeholder="Pilih Status Aktivasi"
             v-model="statusFilter"
             :items="filterStatusOptions"
+            value-key="value"
+            label-key="label"
             class="w-full px-3 py-3 rounded-xl text-sm bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 transition-all duration-200"
           />
         </div>
@@ -269,31 +285,24 @@ const columns = [
         </span>
       </template>
 
-      <!-- NAMA MENU -->
-      <template #nama_menu-cell="{ row }">
+      <!-- KODE EDUKASI KESEHATAN -->
+      <template #kode_edukasikesehatan-cell="{ row }">
         <span class="text-xs font-medium text-gray-700 dark:text-slate-200">
-          {{ (row.original as Menu).name }}
+          {{ (row.original as Menu).kode_edukasikesehatan }}
         </span>
       </template>
 
-      <!-- PATH URL -->
-      <template #pathurl-cell="{ row }">
+      <!-- NAMA EDUKASI KESEHATAN -->
+      <template #nama_edukasikesehatan-cell="{ row }">
         <span class="text-xs">
-          {{ (row.original as Menu).pathurl }}
+          {{ (row.original as Menu).nama_edukasikesehatan }}
         </span>
       </template>
 
-      <!-- KATEGORI -->
-      <template #kategori-cell="{ row }">
-        <span
-          :class="[
-            'px-2.5 py-1 text-xs font-medium rounded-full',
-            (row.original as Menu).kategori === 'Website'
-              ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30'
-              : 'bg-rose-100 text-rose-700 dark:bg-rose-900/30',
-          ]"
-        >
-          {{ (row.original as Menu).kategori }}
+      <!-- DESKRIPSI -->
+      <template #deskripsi-cell="{ row }">
+        <span class="text-xs">
+          {{ (row.original as Menu).deskripsi }}
         </span>
       </template>
 
@@ -333,12 +342,13 @@ const columns = [
     </BaseTable>
     <!-- End Table -->
     <div>
-      <BaseModalMasterSubMenu
+      <BaseModalTransaksiEdukasiKesehatan
         size="lg"
         :model-value="showModal"
         @update:modelValue="showModal = $event"
         :is-edit="isEdit"
         :initialData="selectedData"
+        :next-number="nextNumber"
         @save="handleSave"
       />
     </div>

@@ -5,7 +5,7 @@ import { confirmAction, successAlert, errorAlert } from "~/utils/swal";
 import BaseStatCard from "~/components/form/BaseStatCard.vue";
 import BaseSearch from "~/components/form/BaseSearch.vue";
 import BaseTable from "~/components/form/BaseTable.vue";
-import BaseModalMenu from "~/components/base/master/BaseModalMenu.vue";
+import BaseModalMasterMenu from "~/components/base/master/BaseModalMasterMenu.vue";
 
 useHead({
   title: "Admin Master Menu",
@@ -331,7 +331,7 @@ const columns = [
     </BaseTable>
     <!-- End Table -->
     <div>
-      <BaseModalMenu
+      <BaseModalMasterMenu
         size="lg"
         :model-value="showModal"
         @update:modelValue="showModal = $event"

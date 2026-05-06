@@ -5,7 +5,7 @@ import { confirmAction, successAlert, errorAlert } from "~/utils/swal";
 import BaseStatCard from "~/components/form/BaseStatCard.vue";
 import BaseSearch from "~/components/form/BaseSearch.vue";
 import BaseTable from "~/components/form/BaseTable.vue";
-import BaseModalHakAkses from "~/components/base/master/BaseModalHakAkses.vue";
+import BaseModalMasterHakAkses from "~/components/base/master/BaseModalMasterHakAkses.vue";
 
 useHead({
   title: "Admin Master Hak Akses",
@@ -311,7 +311,7 @@ const columns = [
     </BaseTable>
     <!-- End Table -->
     <div>
-      <BaseModalHakAkses
+      <BaseModalMasterHakAkses
         size="lg"
         :model-value="showModal"
         @update:modelValue="showModal = $event"

@@ -3,15 +3,15 @@ import { ref, reactive, computed } from "vue";
 import { toastSuccess, toastError, toastWarning } from "~/utils/toast";
 import { confirmAction, successAlert, errorAlert } from "~/utils/swal";
 import BaseStatCard from "~/components/form/BaseStatCard.vue";
-import BaseSearch from "~/components/form/BaseSearch.vue";
 import BaseTable from "~/components/form/BaseTable.vue";
-import BaseModalMasterSubMenu from "~/components/base/master/BaseModalMasterSubMenu.vue";
+import BaseModalMasterPengguna from "~/components/base/master/BaseModalMasterPengguna.vue";
+import BaseModalTransaksiHaki from "~/components/base/transaksi/BaseModalTransaksiHaki.vue";
 
 useHead({
-  title: "Admin Master Submenu",
+  title: "Admin Transaksi Haki",
 });
 definePageMeta({
-  breadcrumb: [{ label: "Master", to: "/master" }, { label: "Master Submenu" }],
+  breadcrumb: [{ label: "Transaksi", to: "/transaksi" }, { label: "Haki" }],
 });
 
 /* =====================
@@ -22,8 +22,23 @@ const isEdit = ref(false);
 const editIndex = ref<number | null>(null);
 
 const dataTable = ref([
-  { name: "Website", pathurl: "/", kategori: "Website", status: "aktif" },
-  { name: "Admin", pathurl: "/", kategori: "Admin", status: "tidak_aktif" },
+  {
+    kode_haki: "HAKI20260429001",
+    nomor_haki: "EC0020221",
+    nama_haki: "Electronic Medical Record Soetomo (EMR)",
+    tahun: "30 Desember 2022",
+    file: "",
+    status: "aktif",
+  },
+  {
+    kode_haki: "HAKI20260429002",
+    nomor_haki: "EC0020242098",
+    nama_haki:
+      "Aplikasi Budgeting, Key Performance Indikator and Evaluation (BRIEV) RSUD Dr. Soetomo",
+    tahun: "5 Maret 2024",
+    file: "",
+    status: "tidak_aktif",
+  },
 ]);
 
 /* =====================
@@ -70,10 +85,6 @@ async function deleteUser(index: number) {
 /* =====================
    SELECT2
 ===================== */
-const kategoriOptions = [
-  { value: "Website", label: "Website" },
-  { value: "Admin", label: "Admin" },
-];
 
 const filterStatusOptions = [
   { value: "aktif", label: "Aktif" },
@@ -84,51 +95,55 @@ const filterStatusOptions = [
    SEARCH
 ===================== */
 const cariData = ref("");
-const kategoriFilter = ref<{ label: string; value: string } | undefined>(undefined);
-const statusFilter = ref<{ label: string; value: string } | undefined>(undefined);
+const kodeFilter = ref<string | undefined>();
+const statusFilter = ref<string | undefined>();
 const appliedFilter = ref({
   search: "",
-  kategori: undefined as string | undefined,
+  kode: undefined as string | undefined,
   status: undefined as string | undefined,
 });
+
+const kodeOptions = computed(() =>
+  dataTable.value.map((i) => ({
+    label: `${i.nomor_haki} - ${i.nama_haki}`,
+    value: i.nomor_haki,
+  }))
+);
 
 function handleSearch() {
   appliedFilter.value = {
     search: cariData.value,
-    kategori: kategoriFilter.value?.value,
-    status: statusFilter.value?.value,
+    kode: kodeFilter.value,
+    status: statusFilter.value,
   };
 }
 
 function handleReset() {
   cariData.value = "";
-  kategoriFilter.value = undefined;
+  kodeFilter.value = undefined;
   statusFilter.value = undefined;
 
   appliedFilter.value = {
     search: "",
-    kategori: undefined,
+    kode: undefined,
     status: undefined,
   };
 }
 
 const filteredData = computed(() => {
   return dataTable.value.filter((item) => {
-    const matchSearch =
-      !appliedFilter.value.search ||
-      [item.name, item.pathurl]
-        .join(" ")
-        .toLowerCase()
-        .includes(appliedFilter.value.search.toLowerCase());
-
-    const matchKategori =
-      !appliedFilter.value.kategori || item.kategori === appliedFilter.value.kategori;
+    const matchKode =
+      !appliedFilter.value.kode || item.nomor_haki === appliedFilter.value.kode;
 
     const matchStatus =
       !appliedFilter.value.status || item.status === appliedFilter.value.status;
 
-    return matchSearch && matchKategori && matchStatus;
+    return matchKode && matchStatus;
   });
+});
+
+const nextNumber = computed(() => {
+  return dataTable.value.length + 1;
 });
 
 /* =====================
@@ -142,17 +157,19 @@ const statistik = computed(() => ({
 
 // Interface untuk tipe data menu
 interface Menu {
-  name: string;
-  pathurl: string;
-  kategori: string;
+  kode_haki: string;
+  nomor_haki: string;
+  nama_haki: string;
+  tahun: string;
   status: string;
 }
 // TABLE
 const columns = [
   { accessorKey: "no", header: "No" },
-  { accessorKey: "nama_menu", header: "Nama Submenu" },
-  { accessorKey: "pathurl", header: "Path URL" },
-  { accessorKey: "kategori", header: "Kategori" },
+  { accessorKey: "kode_haki", header: "Kode HAKI" },
+  { accessorKey: "nomor_haki", header: "Nomor HAKI" },
+  { accessorKey: "nama_haki", header: "Nama HAKI" },
+  { accessorKey: "tahun", header: "Tahun" },
   { accessorKey: "status", header: "Status Aktivasi" },
   { accessorKey: "actions", header: "Aksi" },
 ];
@@ -161,13 +178,13 @@ const columns = [
   <!-- Start Section -->
   <div class="mb-4">
     <h1 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">
-      Master Submenu
+      Transaksi Haki
     </h1>
     <AppBreadcrumb />
   </div>
   <div class="grid grid-cols-3 gap-4 mb-6">
     <BaseStatCard
-      title="Total Submenu"
+      title="Total HAKI"
       :value="statistik.total"
       color="from-blue-500 to-blue-600"
       iconColor="text-blue-200"
@@ -175,7 +192,7 @@ const columns = [
     />
 
     <BaseStatCard
-      title="Total Submenu Aktif"
+      title="Total HAKI Aktif"
       :value="statistik.aktif"
       color="from-green-500 to-green-600"
       iconColor="text-white-200"
@@ -183,7 +200,7 @@ const columns = [
     />
 
     <BaseStatCard
-      title="Total Submenu Tidak Aktif"
+      title="Total HAKI Tidak Aktif"
       :value="statistik.tidak"
       color="from-red-500 to-red-600"
       iconColor="text-white-200"
@@ -199,14 +216,13 @@ const columns = [
       <!-- SEARCH -->
       <div class="w-full group flex items-center sm:w-full group gap-5">
         <div class="flex-1">
-          <BaseSearch v-model="cariData" placeholder="Cari Submenu... " />
-        </div>
-        <div class="flex-1">
           <USelectMenu
-            label="Pilih Kategori"
-            placeholder="Pilih Kategori"
-            v-model="kategoriFilter"
-            :items="kategoriOptions"
+            label="Pilih Nomor dan Nama Haki"
+            placeholder="Pilih Nomor dan Nama Haki"
+            v-model="kodeFilter"
+            :items="kodeOptions"
+            value-key="value"
+            label-key="label"
             class="w-full px-3 py-3 rounded-xl text-sm bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 transition-all duration-200"
           />
         </div>
@@ -216,6 +232,8 @@ const columns = [
             placeholder="Pilih Status Aktivasi"
             v-model="statusFilter"
             :items="filterStatusOptions"
+            value-key="value"
+            label-key="label"
             class="w-full px-3 py-3 rounded-xl text-sm bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 transition-all duration-200"
           />
         </div>
@@ -269,31 +287,31 @@ const columns = [
         </span>
       </template>
 
-      <!-- NAMA MENU -->
-      <template #nama_menu-cell="{ row }">
+      <!-- KODE HAKI -->
+      <template #kode_haki-cell="{ row }">
         <span class="text-xs font-medium text-gray-700 dark:text-slate-200">
-          {{ (row.original as Menu).name }}
+          {{ (row.original as Menu).kode_haki }}
         </span>
       </template>
 
-      <!-- PATH URL -->
-      <template #pathurl-cell="{ row }">
+      <!-- NOMOR HAKI -->
+      <template #nomor_haki-cell="{ row }">
         <span class="text-xs">
-          {{ (row.original as Menu).pathurl }}
+          {{ (row.original as Menu).nomor_haki }}
         </span>
       </template>
 
-      <!-- KATEGORI -->
-      <template #kategori-cell="{ row }">
-        <span
-          :class="[
-            'px-2.5 py-1 text-xs font-medium rounded-full',
-            (row.original as Menu).kategori === 'Website'
-              ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30'
-              : 'bg-rose-100 text-rose-700 dark:bg-rose-900/30',
-          ]"
-        >
-          {{ (row.original as Menu).kategori }}
+      <!-- NAMA HAKI -->
+      <template #nama_haki-cell="{ row }">
+        <span class="text-xs">
+          {{ (row.original as Menu).nama_haki }}
+        </span>
+      </template>
+
+      <!-- TAHUN -->
+      <template #tahun-cell="{ row }">
+        <span class="text-xs">
+          {{ (row.original as Menu).tahun }}
         </span>
       </template>
 
@@ -333,12 +351,13 @@ const columns = [
     </BaseTable>
     <!-- End Table -->
     <div>
-      <BaseModalMasterSubMenu
+      <BaseModalTransaksiHaki
         size="lg"
         :model-value="showModal"
         @update:modelValue="showModal = $event"
         :is-edit="isEdit"
         :initialData="selectedData"
+        :next-number="nextNumber"
         @save="handleSave"
       />
     </div>

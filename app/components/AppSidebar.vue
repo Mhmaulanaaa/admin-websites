@@ -101,47 +101,47 @@ const menus: Menu[] = [
       {
         name: "Edukasi Kesehatan",
         icon: "heroicons:chevron-right",
-        to: "/layanan-unggulan",
+        to: "/transaksi/edukasikesehatan",
       },
       {
         name: "HAKI",
         icon: "heroicons:chevron-right",
-        to: "/layanan-unggulan",
+        to: "/transaksi/haki",
       },
       {
         name: "Instagram Feed",
         icon: "heroicons:chevron-right",
-        to: "/layanan-unggulan",
+        to: "/transaksi/instagramfeed",
       },
       {
         name: "Inovasi",
         icon: "heroicons:chevron-right",
-        to: "/layanan-unggulan",
+        to: "/transaksi/inovasi",
       },
       {
         name: "Kerjasama Pembiayaan",
         icon: "heroicons:chevron-right",
-        to: "/kerjasama-pembiayaan",
+        to: "/transaksi/kerjasamapembiayaan",
       },
       {
         name: "Keberatan Atas Permohonan Informasi",
         icon: "heroicons:chevron-right",
-        to: "/layanan-unggulan",
+        to: "/transaksi/keberatanatasinformasi",
       },
       {
         name: "Pengaduan Layanan Publik",
         icon: "heroicons:chevron-right",
-        to: "/layanan-unggulan",
+        to: "/transaksi/pengaduanlayananpublik",
       },
       {
         name: "Permohonan Informasi",
         icon: "heroicons:chevron-right",
-        to: "/daftar-unitkerja",
+        to: "/transaksi/permohonaninformasi",
       },
       {
         name: "Slider",
         icon: "heroicons:chevron-right",
-        to: "/slider",
+        to: "/transaksi/slider",
       },
       {
         name: "Standar Pelayanan Publik",
