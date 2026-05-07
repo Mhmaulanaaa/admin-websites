@@ -26,8 +26,8 @@ const dataTable = ref([
     kode_haki: "HAKI20260429001",
     nomor_haki: "EC0020221",
     nama_haki: "Electronic Medical Record Soetomo (EMR)",
-    tahun: "30 Desember 2022",
-    file: "",
+    tahun: "2022-12-30",
+    file: "https://example.com/file1.jpg",
     status: "aktif",
   },
   {
@@ -35,11 +35,29 @@ const dataTable = ref([
     nomor_haki: "EC0020242098",
     nama_haki:
       "Aplikasi Budgeting, Key Performance Indikator and Evaluation (BRIEV) RSUD Dr. Soetomo",
-    tahun: "5 Maret 2024",
-    file: "",
+    tahun: "2024-03-05",
+    file: "https://example.com/file1.jpg",
     status: "tidak_aktif",
   },
 ]);
+
+// Get Icons PDF Table
+function getFileIcon(file: string) {
+  if (!file) return "i-heroicons-document";
+
+  const ext = file.includes(".") ? file.split(".").pop()?.toLowerCase() : "";
+
+  if (ext === "pdf") return "i-heroicons-document";
+  if (["jpg", "jpeg", "png"].includes(ext || "")) return "i-heroicons-photo";
+  if (ext === "zip") return "i-heroicons-archive-box";
+
+  return "i-heroicons-document";
+}
+
+function openFile(file: string) {
+  if (!file) return;
+  window.open(file, "_blank");
+}
 
 /* =====================
    MODAL CONTROL
@@ -160,6 +178,7 @@ interface Menu {
   kode_haki: string;
   nomor_haki: string;
   nama_haki: string;
+  file: string;
   tahun: string;
   status: string;
 }
@@ -169,6 +188,7 @@ const columns = [
   { accessorKey: "kode_haki", header: "Kode HAKI" },
   { accessorKey: "nomor_haki", header: "Nomor HAKI" },
   { accessorKey: "nama_haki", header: "Nama HAKI" },
+  { accessorKey: "file", header: "File" },
   { accessorKey: "tahun", header: "Tahun" },
   { accessorKey: "status", header: "Status Aktivasi" },
   { accessorKey: "actions", header: "Aksi" },
@@ -306,6 +326,16 @@ const columns = [
         <span class="text-xs">
           {{ (row.original as Menu).nama_haki }}
         </span>
+      </template>
+
+      <!-- FILE -->
+      <template #file-cell="{ row }">
+        <div
+          class="flex items-center gap-2 cursor-pointer hover:text-emerald-600"
+          @click="openFile((row.original as Menu).file)"
+        >
+          <UIcon :name="getFileIcon((row.original as Menu).file)" class="w-4 h-4" />
+        </div>
       </template>
 
       <!-- TAHUN -->

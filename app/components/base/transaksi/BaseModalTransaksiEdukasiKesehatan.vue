@@ -126,7 +126,11 @@ const statusOptions = [
                 {{ isEdit ? "Edit Edukasi Kesehatan" : "Tambah Edukasi Kesehatan" }}
               </h2>
               <p class="text-xs text-slate-500">
-                {{ isEdit ? "Perbarui data edukasi kesehatan" : "Tambahkan edukasi kesehatan baru" }}
+                {{
+                  isEdit
+                    ? "Perbarui data edukasi kesehatan"
+                    : "Tambahkan edukasi kesehatan baru"
+                }}
               </p>
             </div>
           </div>
@@ -143,11 +147,18 @@ const statusOptions = [
         <div class="p-6 m-1 gap-2">
           <div v-if="isEdit">
             <label class="text-sm">Kode Edukasi Kesehatan</label>
-            <BaseInput v-model="form.kode_edukasikesehatan" placeholder="Kode Edukasi Kesehatan" disabled />
+            <BaseInput
+              v-model="form.kode_edukasikesehatan"
+              placeholder="Kode Edukasi Kesehatan"
+              disabled
+            />
           </div>
           <div>
             <label class="text-sm">Nama Edukasi Kesehatan</label>
-            <BaseInput v-model="form.nama_edukasikesehatan" placeholder="Nama Edukasi Kesehatan" />
+            <BaseInput
+              v-model="form.nama_edukasikesehatan"
+              placeholder="Nama Edukasi Kesehatan"
+            />
           </div>
           <div>
             <label class="text-sm">Deskripsi</label>

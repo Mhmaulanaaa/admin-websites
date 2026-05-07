@@ -1,29 +1,34 @@
 <script setup lang="ts">
 const props = defineProps<{
-  modelValue?: string;
+  modelValue: string;
   label?: string;
   placeholder?: string;
+  readonly?: boolean;
+  disabled?: boolean;
 }>();
 
 const emit = defineEmits(["update:modelValue"]);
 
 const onInput = (e: Event) => {
   const target = e.target as HTMLInputElement;
-  emit("update:modelValue", target.value || "");
+  emit("update:modelValue", target.value);
 };
 </script>
 
 <template>
   <div>
-    <label class="text-sm text-gray-600 dark:text-gray-300">
+    <label v-if="label" class="text-sm text-gray-600 dark:text-gray-300">
       {{ label }}
     </label>
 
     <input
       type="date"
-      :value="modelValue || ''"
+      :value="modelValue"
       @input="onInput"
-      class="w-full mt-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm focus:ring-2 focus:ring-green-500 transition"
+      :placeholder="placeholder"
+      :readonly="readonly"
+      :disabled="disabled"
+      class="w-full mt-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50 disabled:cursor-not-allowed"
     />
   </div>
 </template>

@@ -48,10 +48,6 @@ function getFileIcon(file: string) {
   return "i-heroicons-document";
 }
 
-function getFileName(file: string) {
-  return file.split("/").pop();
-}
-
 function openFile(file: string) {
   if (!file) return;
   window.open(file, "_blank");
