@@ -5,14 +5,14 @@ import { confirmAction } from "~/utils/swal";
 
 import BaseStatCard from "~/components/form/BaseStatCard.vue";
 import BaseTable from "~/components/form/BaseTable.vue";
-import BaseModalTransaksiInstagramFeed from "~/components/base/transaksi/BaseModalTransaksiInstagramFeed.vue";
+import BaseModalTransaksiPodkiesJatim from "~/components/base/transaksi/BaseModalTransaksiPodkiesJatim.vue";
 
 useHead({
-  title: "Admin Transaksi Instagram Feed",
+  title: "Admin Transaksi Podkies Jatim",
 });
 
 definePageMeta({
-  breadcrumb: [{ label: "Transaksi", to: "/transaksi" }, { label: "Instagram Feed" }],
+  breadcrumb: [{ label: "Transaksi", to: "/transaksi" }, { label: "Podkies Jatim" }],
 });
 
 /* =====================
@@ -24,18 +24,30 @@ const editIndex = ref<number | null>(null);
 
 const dataTable = ref([
   {
-    kode_instagramfeed: "IGF20260508001",
-    link_embed:
-      "https://www.instagram.com/reel/DVGTOihD3nD/?utm_source=ig_embed&ig_rid=db22e58d-d0ef-4765-9931-c93f950c9124",
+    kode_podkiesjatim: "POD20260508001",
+    link_embed: "https://www.youtube.com/watch?v=GAGcgPsqG28",
     status: "aktif",
   },
   {
-    kode_instagramfeed: "IGF20260508002",
-    link_embed:
-      "https://www.instagram.com/reel/DVGTOihD3nD/?utm_source=ig_embed&ig_rid=db22e58d-d0ef-4765-9931-c93f950c9124",
+    kode_podkiesjatim: "POD20260508002",
+    link_embed: "https://www.youtube.com/watch?v=6KHUnR-iwhM",
     status: "tidak_aktif",
   },
 ]);
+
+function getYoutubeId(url: string) {
+  const regExp = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/;
+
+  const match = url.match(regExp);
+
+  return match ? match[1] : "";
+}
+
+function getYoutubeThumbnail(url: string) {
+  const id = getYoutubeId(url);
+
+  return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+}
 
 /* =====================
    MODAL
@@ -99,8 +111,8 @@ const appliedFilter = ref({
 
 const kodeOptions = computed(() =>
   dataTable.value.map((item) => ({
-    label: item.kode_instagramfeed,
-    value: item.kode_instagramfeed,
+    label: item.kode_podkiesjatim,
+    value: item.kode_podkiesjatim,
   }))
 );
 
@@ -127,7 +139,7 @@ function handleReset() {
 const filteredData = computed(() => {
   return dataTable.value.filter((item) => {
     const matchKode =
-      !appliedFilter.value.kode || item.kode_instagramfeed === appliedFilter.value.kode;
+      !appliedFilter.value.kode || item.kode_podkiesjatim === appliedFilter.value.kode;
 
     const matchStatus =
       !appliedFilter.value.status || item.status === appliedFilter.value.status;
@@ -156,7 +168,7 @@ const statistik = computed(() => ({
    INTERFACE
 ===================== */
 interface Feed {
-  kode_instagramfeed: string;
+  kode_podkiesjatim: string;
   link_embed: string;
   status: string;
 }
@@ -166,7 +178,7 @@ interface Feed {
 ===================== */
 const columns = [
   { accessorKey: "no", header: "No" },
-  { accessorKey: "kode_instagramfeed", header: "Kode Feed" },
+  { accessorKey: "kode_podkiesjatim", header: "Kode Podkies Jatim" },
   { accessorKey: "link_embed", header: "Link Embed" },
   { accessorKey: "status", header: "Status" },
   { accessorKey: "actions", header: "Aksi" },
@@ -177,7 +189,7 @@ const columns = [
   <!-- HEADER -->
   <div class="mb-4">
     <h1 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">
-      Transaksi Instagram Feed
+      Transaksi Podkies Jatim
     </h1>
 
     <AppBreadcrumb />
@@ -186,7 +198,7 @@ const columns = [
   <!-- STATISTIK -->
   <div class="grid grid-cols-3 gap-4 mb-6">
     <BaseStatCard
-      title="Total Feed"
+      title="Total Podkies Jatim"
       :value="statistik.total"
       color="from-blue-500 to-blue-600"
       iconColor="text-blue-200"
@@ -194,7 +206,7 @@ const columns = [
     />
 
     <BaseStatCard
-      title="Feed Aktif"
+      title="Podkies Jatim Aktif"
       :value="statistik.aktif"
       color="from-green-500 to-green-600"
       iconColor="text-white-200"
@@ -202,7 +214,7 @@ const columns = [
     />
 
     <BaseStatCard
-      title="Feed Tidak Aktif"
+      title="Podkies Jatim Tidak Aktif"
       :value="statistik.tidak"
       color="from-red-500 to-red-600"
       iconColor="text-white-200"
@@ -221,7 +233,7 @@ const columns = [
         :items="kodeOptions"
         value-key="value"
         label-key="label"
-        placeholder="Pilih Kode Feed"
+        placeholder="Pilih Kode Podkies Jatim"
         class="w-full px-3 py-3 rounded-xl text-sm bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 transition-all duration-200"
       />
 
@@ -280,42 +292,39 @@ const columns = [
       </template>
 
       <!-- KODE -->
-      <template #kode_instagramfeed-cell="{ row }">
+      <template #kode_podkiesjatim-cell="{ row }">
         <span class="text-xs font-semibold">
-          {{ (row.original as Feed).kode_instagramfeed }}
+          {{ (row.original as Feed).kode_podkiesjatim }}
         </span>
       </template>
 
       <!-- LINK EMBED -->
       <template #link_embed-cell="{ row }">
         <div
-          class="group relative flex items-center justify-between gap-4 min-w-[340px] rounded-3xl border border-pink-100 dark:border-slate-700 bg-gradient-to-br from-pink-50 via-white to-orange-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 px-4 py-4 shadow-[0_8px_30px_rgba(0,0,0,0.05)] hover:shadow-[0_15px_35px_rgba(236,72,153,0.18)] transition-all duration-300 overflow-hidden"
+          class="group relative flex items-center justify-between gap-4 min-w-[380px] rounded-3xl border border-red-100 dark:border-slate-700 bg-gradient-to-br from-red-50 via-white to-orange-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 px-4 py-4 shadow-[0_8px_30px_rgba(0,0,0,0.05)] hover:shadow-[0_15px_35px_rgba(239,68,68,0.18)] transition-all duration-300 overflow-hidden"
         >
           <!-- GLOW -->
           <div
-            class="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-r from-pink-500/5 via-orange-400/5 to-yellow-400/5"
+            class="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-r from-red-500/5 via-orange-400/5 to-yellow-400/5"
           ></div>
 
           <!-- LEFT -->
           <div class="relative flex items-center gap-4 overflow-hidden">
-            <!-- ICON -->
+            <!-- THUMBNAIL -->
             <div class="relative shrink-0">
-              <!-- OUTER -->
-              <div
-                class="w-14 h-14 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-orange-400 p-[2px] shadow-lg"
-              >
-                <!-- INNER -->
+              <img
+                :src="getYoutubeThumbnail((row.original as Feed).link_embed)"
+                class="w-24 h-16 object-cover rounded-xl shadow-md"
+              />
+
+              <!-- PLAY ICON -->
+              <div class="absolute inset-0 flex items-center justify-center">
                 <div
-                  class="w-full h-full rounded-[14px] bg-white dark:bg-slate-900 flex items-center justify-center"
+                  class="w-10 h-10 rounded-full bg-red-600/90 flex items-center justify-center shadow-lg"
                 >
-                  <UIcon name="i-simple-icons-instagram" class="w-6 h-6 text-pink-500" />
+                  <UIcon name="i-heroicons-play-solid" class="w-5 h-5 text-white" />
                 </div>
               </div>
-
-              <!-- ONLINE DOT -->
-              <span
-                class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900"
-              ></span>
             </div>
 
             <!-- TEXT -->
@@ -323,18 +332,18 @@ const columns = [
               <!-- TITLE -->
               <div class="flex items-center gap-1.5 mb-1">
                 <p class="text-sm font-semibold text-slate-800 dark:text-white truncate">
-                  Instagram Feed
+                  YouTube Video
                 </p>
 
                 <UIcon
-                  name="i-heroicons-check-badge-solid"
-                  class="w-4 h-4 text-blue-500 shrink-0"
+                  name="i-simple-icons-youtube"
+                  class="w-4 h-4 text-red-500 shrink-0"
                 />
               </div>
 
               <!-- URL -->
               <p
-                class="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[190px]"
+                class="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[220px]"
               >
                 {{ (row.original as Feed).link_embed }}
               </p>
@@ -343,7 +352,7 @@ const columns = [
               <div class="flex items-center gap-1.5 mt-2">
                 <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
 
-                <p class="text-[10px] text-emerald-600 font-medium">Ready to Open</p>
+                <p class="text-[10px] text-emerald-600 font-medium">Ready to Watch</p>
               </div>
             </div>
           </div>
@@ -352,11 +361,11 @@ const columns = [
           <a
             :href="(row.original as Feed).link_embed"
             target="_blank"
-            class="relative shrink-0 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white text-xs font-semibold transition-all duration-300 flex items-center gap-2 shadow-lg hover:scale-[1.03] active:scale-[0.97]"
+            class="relative shrink-0 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-xs font-semibold transition-all duration-300 flex items-center gap-2 shadow-lg hover:scale-[1.03] active:scale-[0.97]"
           >
-            <UIcon name="i-heroicons-arrow-top-right-on-square" class="w-4 h-4" />
+            <UIcon name="i-heroicons-play" class="w-4 h-4" />
 
-            Buka
+            Tonton
           </a>
         </div>
       </template>
@@ -402,7 +411,7 @@ const columns = [
     </BaseTable>
 
     <!-- MODAL -->
-    <BaseModalTransaksiInstagramFeed
+    <BaseModalTransaksiPodkiesJatim
       size="lg"
       :model-value="showModal"
       @update:modelValue="showModal = $event"

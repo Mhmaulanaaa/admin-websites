@@ -124,6 +124,62 @@ const menus: Menu[] = [
         to: "/transaksi/kerjasamapembiayaan",
       },
       {
+        name: "Slider",
+        icon: "heroicons:chevron-right",
+        to: "/transaksi/slider",
+      },
+      {
+        name: "Soetomo News",
+        icon: "heroicons:chevron-right",
+        to: "/transaksi/soetomonews",
+      },
+      {
+        name: "Seputar Jatim",
+        icon: "heroicons:chevron-right",
+        to: "/transaksi/seputarjatim",
+      },
+      {
+        name: "Survei Website",
+        icon: "heroicons:chevron-right",
+        to: "/transaksi/surveiwebsite",
+      },
+
+      {
+        name: "Majalah Mimbar",
+        icon: "heroicons:chevron-right",
+        to: "/transaksi/majalahmimbar",
+      },
+      {
+        name: "Laporan",
+        icon: "heroicons:chevron-right",
+        to: "/transaksi/laporan",
+      },
+      {
+        name: "Hari Peringatan",
+        icon: "heroicons:chevron-right",
+        to: "/transaksi/hariperingatan",
+      },
+      {
+        name: "Penghargaan",
+        icon: "heroicons:chevron-right",
+        to: "/transaksi/penghargaan",
+      },
+      {
+        name: "Profil Direksi",
+        icon: "heroicons:chevron-right",
+        to: "/transaksi/profildireksi",
+      },
+      {
+        name: "Podkies Jatim",
+        icon: "heroicons:chevron-right",
+        to: "/transaksi/podkiesjatim",
+      },
+      {
+        name: "Standar Pelayanan Publik",
+        icon: "heroicons:chevron-right",
+        to: "/transaksi/standarpelayananpublik",
+      },
+      {
         name: "Keberatan Atas Permohonan Informasi",
         icon: "heroicons:chevron-right",
         to: "/transaksi/keberatanatasinformasi",
@@ -137,46 +193,6 @@ const menus: Menu[] = [
         name: "Permohonan Informasi",
         icon: "heroicons:chevron-right",
         to: "/transaksi/permohonaninformasi",
-      },
-      {
-        name: "Slider",
-        icon: "heroicons:chevron-right",
-        to: "/transaksi/slider",
-      },
-      {
-        name: "Standar Pelayanan Publik",
-        icon: "heroicons:chevron-right",
-        to: "/daftar-poli",
-      },
-      {
-        name: "Soetomo News",
-        icon: "heroicons:chevron-right",
-        to: "/layanan-unggulan",
-      },
-      {
-        name: "Seputar Jatim",
-        icon: "heroicons:chevron-right",
-        to: "/layanan-unggulan",
-      },
-      {
-        name: "Survei Website",
-        icon: "heroicons:chevron-right",
-        to: "/layanan-unggulan",
-      },
-      {
-        name: "Podkies Jatim",
-        icon: "heroicons:chevron-right",
-        to: "/layanan-unggulan",
-      },
-      {
-        name: "Majalah Mimbar",
-        icon: "heroicons:chevron-right",
-        to: "/layanan-unggulan",
-      },
-      {
-        name: "Laporan",
-        icon: "heroicons:chevron-right",
-        to: "/layanan-unggulan",
       },
       {
         name: "PPID - Dokumen",
@@ -200,21 +216,6 @@ const menus: Menu[] = [
       },
       {
         name: "Pengaduan - Laporan",
-        icon: "heroicons:chevron-right",
-        to: "/layanan-unggulan",
-      },
-      {
-        name: "Penghargaan",
-        icon: "heroicons:chevron-right",
-        to: "/layanan-unggulan",
-      },
-      {
-        name: "Profil Direksi",
-        icon: "heroicons:chevron-right",
-        to: "/layanan-unggulan",
-      },
-      {
-        name: "Hari Peringatan",
         icon: "heroicons:chevron-right",
         to: "/layanan-unggulan",
       },

@@ -4,13 +4,13 @@ import { toastSuccess, toastError, toastWarning } from "~/utils/toast";
 import { confirmAction, successAlert, errorAlert } from "~/utils/swal";
 import BaseStatCard from "~/components/form/BaseStatCard.vue";
 import BaseTable from "~/components/form/BaseTable.vue";
-import BaseModalTransaksiHaki from "~/components/base/transaksi/BaseModalTransaksiHaki.vue";
+import BaseModalTransaksiSoetomoNews from "~/components/base/transaksi/BaseModalTransaksiSoetomoNews.vue";
 
 useHead({
-  title: "Admin Transaksi Haki",
+  title: "Admin Transaksi Soetomo News",
 });
 definePageMeta({
-  breadcrumb: [{ label: "Transaksi", to: "/transaksi" }, { label: "Haki" }],
+  breadcrumb: [{ label: "Transaksi", to: "/transaksi" }, { label: "Soetomo News" }],
 });
 
 /* =====================
@@ -22,19 +22,18 @@ const editIndex = ref<number | null>(null);
 
 const dataTable = ref([
   {
-    kode_haki: "HAKI20260429001",
-    nomor_haki: "EC0020221",
-    nama_haki: "Electronic Medical Record Soetomo (EMR)",
-    tahun: "2022-12-30",
+    kode_news: "SN20260429001",
+    judul: "Judul News 1",
+    deskripsi: "Deskripsi singkat untuk news 1",
+    tanggal: "2024-04-29",
     file: "https://example.com/file1.jpg",
     status: "aktif",
   },
   {
-    kode_haki: "HAKI20260429002",
-    nomor_haki: "EC0020242098",
-    nama_haki:
-      "Aplikasi Budgeting, Key Performance Indikator and Evaluation (BRIEV) RSUD Dr. Soetomo",
-    tahun: "2024-03-05",
+    kode_news: "SN20260429002",
+    judul: "Judul News 2",
+    deskripsi: "Deskripsi singkat untuk news 2",
+    tanggal: "2024-04-29",
     file: "https://example.com/file1.jpg",
     status: "tidak_aktif",
   },
@@ -122,8 +121,8 @@ const appliedFilter = ref({
 
 const kodeOptions = computed(() =>
   dataTable.value.map((i) => ({
-    label: `${i.nomor_haki} - ${i.nama_haki}`,
-    value: i.nomor_haki,
+    label: `${i.kode_news} - ${i.judul}`,
+    value: i.kode_news,
   }))
 );
 
@@ -150,7 +149,7 @@ function handleReset() {
 const filteredData = computed(() => {
   return dataTable.value.filter((item) => {
     const matchKode =
-      !appliedFilter.value.kode || item.nomor_haki === appliedFilter.value.kode;
+      !appliedFilter.value.kode || item.kode_news === appliedFilter.value.kode;
 
     const matchStatus =
       !appliedFilter.value.status || item.status === appliedFilter.value.status;
@@ -174,21 +173,20 @@ const statistik = computed(() => ({
 
 // Interface untuk tipe data menu
 interface Menu {
-  kode_haki: string;
-  nomor_haki: string;
-  nama_haki: string;
+  kode_news: string;
+  judul: string;
+  deskripsi: string;
+  tanggal: string;
   file: string;
-  tahun: string;
   status: string;
 }
 // TABLE
 const columns = [
   { accessorKey: "no", header: "No" },
-  { accessorKey: "kode_haki", header: "Kode HAKI" },
-  { accessorKey: "nomor_haki", header: "Nomor HAKI" },
-  { accessorKey: "nama_haki", header: "Nama HAKI" },
+  { accessorKey: "kode_news", header: "Kode News" },
+  { accessorKey: "judul", header: "Judul" },
+  { accessorKey: "tanggal", header: "Tanggal" },
   { accessorKey: "file", header: "File" },
-  { accessorKey: "tahun", header: "Tahun" },
   { accessorKey: "status", header: "Status Aktivasi" },
   { accessorKey: "actions", header: "Aksi" },
 ];
@@ -197,13 +195,13 @@ const columns = [
   <!-- Start Section -->
   <div class="mb-4">
     <h1 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">
-      Transaksi Haki
+      Transaksi News
     </h1>
     <AppBreadcrumb />
   </div>
   <div class="grid grid-cols-3 gap-4 mb-6">
     <BaseStatCard
-      title="Total HAKI"
+      title="Total News"
       :value="statistik.total"
       color="from-blue-500 to-blue-600"
       iconColor="text-blue-200"
@@ -211,7 +209,7 @@ const columns = [
     />
 
     <BaseStatCard
-      title="Total HAKI Aktif"
+      title="Total News Aktif"
       :value="statistik.aktif"
       color="from-green-500 to-green-600"
       iconColor="text-white-200"
@@ -219,7 +217,7 @@ const columns = [
     />
 
     <BaseStatCard
-      title="Total HAKI Tidak Aktif"
+      title="Total News Tidak Aktif"
       :value="statistik.tidak"
       color="from-red-500 to-red-600"
       iconColor="text-white-200"
@@ -236,8 +234,8 @@ const columns = [
       <div class="w-full group flex items-center sm:w-full group gap-5">
         <div class="flex-1">
           <USelectMenu
-            label="Pilih Nomor dan Nama Haki"
-            placeholder="Pilih Nomor dan Nama Haki"
+            label="Pilih Nomor dan Nama Soetomo News"
+            placeholder="Pilih Nomor dan Nama Soetomo News"
             v-model="kodeFilter"
             :items="kodeOptions"
             value-key="value"
@@ -306,24 +304,24 @@ const columns = [
         </span>
       </template>
 
-      <!-- KODE HAKI -->
-      <template #kode_haki-cell="{ row }">
+      <!-- KODE SOETOMO NEWS -->
+      <template #kode_news-cell="{ row }">
         <span class="text-xs font-medium text-gray-700 dark:text-slate-200">
-          {{ (row.original as Menu).kode_haki }}
+          {{ (row.original as Menu).kode_news }}
         </span>
       </template>
 
-      <!-- NOMOR HAKI -->
-      <template #nomor_haki-cell="{ row }">
+      <!-- JUDUL NEWS -->
+      <template #judul-cell="{ row }">
         <span class="text-xs">
-          {{ (row.original as Menu).nomor_haki }}
+          {{ (row.original as Menu).judul }}
         </span>
       </template>
 
-      <!-- NAMA HAKI -->
-      <template #nama_haki-cell="{ row }">
+      <!-- DESKRIPSI NEWS -->
+      <template #deskripsi-cell="{ row }">
         <span class="text-xs">
-          {{ (row.original as Menu).nama_haki }}
+          {{ (row.original as Menu).deskripsi }}
         </span>
       </template>
 
@@ -337,10 +335,10 @@ const columns = [
         </div>
       </template>
 
-      <!-- TAHUN -->
-      <template #tahun-cell="{ row }">
+      <!-- TANGGAL -->
+      <template #tanggal-cell="{ row }">
         <span class="text-xs">
-          {{ (row.original as Menu).tahun }}
+          {{ (row.original as Menu).tanggal }}
         </span>
       </template>
 
@@ -380,7 +378,7 @@ const columns = [
     </BaseTable>
     <!-- End Table -->
     <div>
-      <BaseModalTransaksiHaki
+      <BaseModalTransaksiSoetomoNews
         size="lg"
         :model-value="showModal"
         @update:modelValue="showModal = $event"
