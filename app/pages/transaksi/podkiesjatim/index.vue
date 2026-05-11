@@ -71,10 +71,10 @@ function openEdit(index: number) {
 function handleSave(data: any) {
   if (isEdit.value && editIndex.value !== null) {
     dataTable.value[editIndex.value] = data;
-    toastSuccess("Instagram Feed berhasil diubah");
+    toastSuccess("Podkies Jatim berhasil diubah");
   } else {
     dataTable.value.push(data);
-    toastSuccess("Instagram Feed berhasil ditambahkan");
+    toastSuccess("Podkies Jatim berhasil ditambahkan");
   }
 }
 
@@ -83,14 +83,14 @@ function handleSave(data: any) {
 ===================== */
 async function deleteFeed(index: number) {
   const result = await confirmAction(
-    "Apakah Anda yakin ingin menghapus Instagram Feed ini?"
+    "Apakah Anda yakin ingin menghapus Podkies Jatim ini?"
   );
 
   if (!result.isConfirmed) return;
 
   dataTable.value.splice(index, 1);
 
-  toastSuccess("Instagram Feed berhasil dihapus");
+  toastSuccess("Podkies Jatim berhasil dihapus");
 }
 
 /* =====================
